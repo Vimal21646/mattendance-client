@@ -5,8 +5,18 @@ import { Button, Modal, FormGroup, Label, Input } from 'reactstrap';
 import AddEmployee from "./AddEmployee";
 
 class UpdateEmployee  extends React.Component {
-
-	getInitialState() {
+    constructor(props) {
+        super(props);
+        this.state = {
+            updateObject: {
+                id: '',
+                name: '',
+                surname: '',
+                salary: '',
+                departmentId: ''
+            }
+		}}
+            getInitialState() {
 
 		return {
 			updateObject: {

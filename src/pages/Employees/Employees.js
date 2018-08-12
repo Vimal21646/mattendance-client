@@ -1,7 +1,7 @@
 import React from 'react';
 
 import axios from 'axios';
-import {ButtonGroup,Button} from 'reactstrap';
+import {ButtonGroup, Button} from 'reactstrap';
 import {FaPlus, FaTrash, FaSync} from 'react-icons/fa';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -9,15 +9,29 @@ import AddEmployeeModal from './AddEmployee';
 import UpdateEmployeeModal from './UpdateEmployee';
 
 class Employees extends React.Component {
-    getInitialState() {
-
-        return {
+    constructor(props) {
+        super(props);
+        this.state = {
             data: null,
             departments: null,
             selectedEmployeeId: null,
             showAddModal: false,
             showUpdateModal: false
-        }
+        };
+        this.departmentFormatter = this.departmentFormatter.bind(this);
+        this.getDepartmentName = this.getDepartmentName.bind(this);
+        this.onRowSelect = this.onRowSelect.bind(this)
+    }
+
+    getInitialState() {
+
+        this.setState({
+            data: null,
+            departments: null,
+            selectedEmployeeId: null,
+            showAddModal: false,
+            showUpdateModal: false
+        });
     }
 
     componentDidMount() {
@@ -25,7 +39,6 @@ class Employees extends React.Component {
     }
 
     render() {
-
         var selectRowProp = {
             mode: "radio",
             clickToSelect: true,
@@ -34,8 +47,8 @@ class Employees extends React.Component {
             onSelect: this.onRowSelect
         };
 
-        if (!this.state.data) {
-            return (<div></div>);
+        if (this.state == null || this.state.data == null) {
+            return (<div>hi..... </div>);
         }
 
         return (
@@ -82,7 +95,6 @@ class Employees extends React.Component {
     // Department list for Select component
     getDepartmentOptions() {
         var options = [];
-
         options = this.state.departments.map(function (obj) {
             var rObj = {};
             rObj['value'] = obj['id'];
@@ -134,6 +146,7 @@ class Employees extends React.Component {
     }
 
     departmentFormatter(cell, row) {
+        alert(row.departmentId);
         return this.getDepartmentName(row.departmentId);
     }
 

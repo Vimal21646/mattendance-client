@@ -10,7 +10,7 @@ class Header extends React.Component {
 					Meeting React App
 				</p>
 				<div className="menu">
-					<NavLink to="/employees" className="menu-link-item" activeClassName="active">Employees</NavLink>
+					<NavLink exact className="menu-link-item" activeClassName="active" to="/employees" >Employees</NavLink>
 				</div>
 			</div>
 

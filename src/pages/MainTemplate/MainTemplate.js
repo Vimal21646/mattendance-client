@@ -1,28 +1,27 @@
-import Header from '../Header';
 import React from 'react';
-
+import Header from '../Header';
+import '../../styles/bootstrap-3.3.6/dist/css/bootstrap.min.css';
+import '../../styles/bootstrap-3.3.6/dist/css/bootstrap-theme.min.css';
+import '../../styles/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import '../../styles/react-select/dist/react-select.min.css';
 import '../../styles/index.css';
 
 class MainTemplate extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {cSelected: []};
-
-        this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
-    }
-
-    onRadioBtnClick(rSelected) {
-        this.setState({rSelected});
-    }
 
     render() {
+
+        const { main } = this.props;
+
         return (
             <div>
-                <Header/>
+                <Header />
+
+                <div className="container">
+                    {main}
+                </div>
             </div>
         );
     }
-};
+}
 
 export default MainTemplate;
