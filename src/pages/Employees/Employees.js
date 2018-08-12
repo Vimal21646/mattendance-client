@@ -54,11 +54,11 @@ class Employees extends React.Component {
         return (
             <div>
                 <ButtonGroup className="m-10">
-                    <Button bsStyle="primary" onClick={this.openAddModal}><FaPlus/> Add</Button>
-                    <Button bsStyle="warning" disabled={this.state.selectedEmployeeId === null}
-                            onClick={this.openUpdateModal}><FaSync/>Update</Button>
-                    <Button bsStyle="danger" disabled={this.state.selectedEmployeeId === null}
-                            onClick={this.onDeleteBtnClicked}><FaTrash/>Delete</Button>
+                    <Button  color="primary" onClick={this.openAddModal}><FaPlus/> Add</Button>
+                    <Button color="warning" disabled={this.state.selectedEmployeeId === null}
+                            onClick={this.openUpdateModal}><FaSync/> Update</Button>
+                    <Button color="danger" disabled={this.state.selectedEmployeeId === null}
+                            onClick={this.onDeleteBtnClicked}><FaTrash/> Delete</Button>
                 </ButtonGroup>
 
                 <BootstrapTable data={this.state.data}
@@ -146,7 +146,6 @@ class Employees extends React.Component {
     }
 
     departmentFormatter(cell, row) {
-        alert(row.departmentId);
         return this.getDepartmentName(row.departmentId);
     }
 
