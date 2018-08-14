@@ -2,13 +2,17 @@ import React from 'react';
 
 import axios from 'axios';
 import {ButtonGroup, Button} from 'reactstrap';
-import {FaPlus, FaTrash, FaSync} from 'react-icons/fa';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import {FaPlus, FaTrash, FaSync,FaDollarSign} from 'react-icons/fa';
+import BootstrapTable from 'react-bootstrap-table-next';
 
 import AddEmployeeModal from './AddEmployee';
 import UpdateEmployeeModal from './UpdateEmployee';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+
 
 class Employees extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -39,6 +43,27 @@ class Employees extends React.Component {
     }
 
     render() {
+
+        const { SearchBar } = Search;
+        const columns = [{
+            dataField: 'id',
+            text: 'Employee ID'
+        }, {
+            dataField: 'name',
+            text: 'First Name'
+        }, {
+            dataField: 'surname',
+            text: 'Last Name'
+        },{
+            dataField: 'salary',
+            text: 'Salary',
+            formatter:this.priceFormatter
+        },{
+            dataField: 'departmentId',
+            text: 'Depertment',
+            formatter:this.departmentFormatter
+        }];
+
         var selectRowProp = {
             mode: "radio",
             clickToSelect: true,
@@ -60,22 +85,25 @@ class Employees extends React.Component {
                     <Button color="danger" disabled={this.state.selectedEmployeeId === null}
                             onClick={this.onDeleteBtnClicked}><FaTrash/> Delete</Button>
                 </ButtonGroup>
-
-                <BootstrapTable data={this.state.data}
-                                striped={true}
-                                hover={true}
-                    //pagination={true}
-                                search={true}
-                                selectRow={selectRowProp}>
-                    <TableHeaderColumn dataField="id" isKey={true} dataAlign="center" dataSort={true}>Employee
-                        ID</TableHeaderColumn>
-                    <TableHeaderColumn dataField="name" dataSort={true}>First Name</TableHeaderColumn>
-                    <TableHeaderColumn dataField="surname">Last Name</TableHeaderColumn>
-                    <TableHeaderColumn dataField="salary" dataFormat={this.priceFormatter}>Salary</TableHeaderColumn>
-                    <TableHeaderColumn dataField="departmentId"
-                                       dataFormat={this.departmentFormatter}>Depertment</TableHeaderColumn>
-                </BootstrapTable>
-
+                <ToolkitProvider
+                    keyField="id"
+                    data={ this.state.data }
+                    columns={ columns }
+                    search
+                >
+                    {
+                        props => (
+                            <div>
+                                <h3>Input something at below input field:</h3>
+                                <SearchBar { ...props.searchProps } />
+                                <hr />
+                                <BootstrapTable
+                                    { ...props.baseProps }
+                                />
+                            </div>
+                        )
+                    }
+                </ToolkitProvider>
                 <AddEmployeeModal parent={this} ref="addEmployee"/>
 
                 <UpdateEmployeeModal parent={this} ref="updateEmployee"/>
@@ -142,7 +170,7 @@ class Employees extends React.Component {
     //END: Delete Employee
 
     priceFormatter(cell, row) {
-        return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
+        return ('<i class="fas fa-rupee-sign"/>'+cell);
     }
 
     departmentFormatter(cell, row) {
