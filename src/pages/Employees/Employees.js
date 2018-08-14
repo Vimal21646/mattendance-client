@@ -2,12 +2,11 @@ import React from 'react';
 
 import axios from 'axios';
 import {ButtonGroup, Button} from 'reactstrap';
-import {FaPlus, FaTrash, FaSync,FaDollarSign} from 'react-icons/fa';
+import {FaPlus, FaTrash, FaSync,FaRupeeSign} from 'react-icons/fa';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import AddEmployeeModal from './AddEmployee';
 import UpdateEmployeeModal from './UpdateEmployee';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
 
@@ -47,21 +46,26 @@ class Employees extends React.Component {
         const { SearchBar } = Search;
         const columns = [{
             dataField: 'id',
-            text: 'Employee ID'
+            text: 'Employee ID',
+            sort: true
         }, {
             dataField: 'name',
-            text: 'First Name'
+            text: 'First Name',
+            sort: true
         }, {
             dataField: 'surname',
-            text: 'Last Name'
+            text: 'Last Name',
+            sort: true
         },{
             dataField: 'salary',
             text: 'Salary',
-            formatter:this.priceFormatter
+            formatter:this.priceFormatter,
+            sort: true
         },{
             dataField: 'departmentId',
             text: 'Depertment',
-            formatter:this.departmentFormatter
+            formatter:this.departmentFormatter,
+            sort: true
         }];
 
         var selectRowProp = {
@@ -170,7 +174,7 @@ class Employees extends React.Component {
     //END: Delete Employee
 
     priceFormatter(cell, row) {
-        return ('<i class="fas fa-rupee-sign"/>'+cell);
+        return (<div><FaRupeeSign/>{cell}</div>);
     }
 
     departmentFormatter(cell, row) {
