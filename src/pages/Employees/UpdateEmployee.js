@@ -19,6 +19,8 @@ class UpdateEmployee extends React.Component {
         }
         this.onUpdateEmployeeNameChange = this.onUpdateEmployeeNameChange.bind(this);
         this.fillUpdateObject=this.fillUpdateObject.bind(this);
+        this.clearUpdateObject=this.clearUpdateObject.bind(this);
+        this.toggle=this.toggle.bind(this);
     };
 
     getInitialState= () =>  {
@@ -40,9 +42,20 @@ class UpdateEmployee extends React.Component {
         // return true;
     };
 
+    closeModal= () =>  {
+        //console.log('EU:shouldComponentUpdate');
+        this.props.parent.state.showUpdateModal=false;
+        // return true;
+    };
+
+    toggle=()=> {
+        this.setState({
+            showUpdateModal: !this.state.showUpdateModal
+        });
+    };
     render= () =>  {
         return (
-            <Modal isOpen={this.props.parent.state.showUpdateModal}>
+            <Modal isOpen={this.state.showUpdateModal}>
                 <ModalHeader>
                     Update Employee
                 </ModalHeader>
@@ -83,17 +96,15 @@ class UpdateEmployee extends React.Component {
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={this.props.parent.closeUpdateModal}>Close</Button>
-                    <Button bsStyle="primary" onClick={this.onUpdateBtnClicked}>Update</Button>
+                    <Button onClick={this.toggle}>Close</Button>
+                    <Button color="primary" onClick={this.onUpdateBtnClicked}>Update</Button>
                 </ModalFooter>
             </Modal>
         );
     };
 
     fillUpdateObject= () =>  {
-
         var selectedEmployee = this.props.parent.getEmployeeById(this.props.parent.state.selectedEmployeeId);
-        alert(selectedEmployee);
         this.state.updateObject = {
             id: selectedEmployee.id,
             name: selectedEmployee.name,
@@ -104,7 +115,6 @@ class UpdateEmployee extends React.Component {
     };
 
     clearUpdateObject= () =>  {
-
         this.state.updateObject.id = '';
         this.state.updateObject.name = '';
         this.state.updateObject.surname = '';

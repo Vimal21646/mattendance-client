@@ -24,6 +24,7 @@ class Employees extends React.Component {
         this.onRowSelect = this.onRowSelect.bind(this)
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
+        this.closeUpdateModal=this.closeUpdateModal.bind(this);
     };
 
     getInitialState = () => {
@@ -146,16 +147,17 @@ class Employees extends React.Component {
     };
 
     //Update modal open/close
-    closeUpdateModal = () => {
-        this.setState({showUpdateModal: false});
-        this.refs.updateEmployee.clearUpdateObject();
+    closeUpdateModal ()  {
+        this.updateEmployee.current.state.showUpdateModal=false;
+        this.updateEmployee.current.clearUpdateObject();
+
     };
 
     openUpdateModal = () => {
-        alert(this.updateEmployee.current);
-        this.updateEmployee.current.fillUpdateObject();
+
+        this.updateEmployee.current.state.showUpdateModal=true;
         this.setState({showUpdateModal: true});
-        this.updateEmployee.current.render();
+        this.updateEmployee.current.fillUpdateObject();
     };
 
     //BEGIN: Delete Employee
