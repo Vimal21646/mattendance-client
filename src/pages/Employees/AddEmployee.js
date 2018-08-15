@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import axios from 'axios';
-import {Button, Modal, FormGroup, Label, Input} from 'reactstrap';
+import {Button, Modal, ModalHeader, ModalBody, ModalFooter,FormGroup, Label, Input} from 'reactstrap';
 
 class AddEmployee extends React.Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class AddEmployee extends React.Component {
                 departmentId: ''
             }
         };
-
+        this.onAddBtnClicked=this.onAddBtnClicked.bind(this);
     }
 
     getInitialState() {
@@ -35,10 +35,8 @@ class AddEmployee extends React.Component {
 
         return (
             <Modal show={this.props.parent.state.showAddModal}>
-                <Modal.Header>
-                    <Modal.Title>Add Employee</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+                <ModalHeader>Add Employee</ModalHeader>
+                <ModalBody>
                     <form>
                         <FormGroup>
                             <Label>Employee name</Label>
@@ -73,11 +71,11 @@ class AddEmployee extends React.Component {
                                 onChange={this.onAddEmployeeDepartmentChange}/>
                         </FormGroup>
                     </form>
-                </Modal.Body>
-                <Modal.Footer>
+                </ModalBody>
+                <ModalFooter>
                     <Button onClick={this.props.parent.closeAddModal}>Close</Button>
                     <Button bsStyle="primary" onClick={this.onAddBtnClicked}>Add</Button>
-                </Modal.Footer>
+                </ModalFooter>
             </Modal>
         );
     }

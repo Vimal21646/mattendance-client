@@ -1,14 +1,12 @@
 import React from 'react';
-
 import axios from 'axios';
 import {ButtonGroup, Button} from 'reactstrap';
-import {FaPlus, FaTrash, FaSync,FaRupeeSign} from 'react-icons/fa';
+import {FaPlus, FaTrash, FaSync, FaRupeeSign} from 'react-icons/fa';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import AddEmployeeModal from './AddEmployee';
 import UpdateEmployeeModal from './UpdateEmployee';
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-
+import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 
 class Employees extends React.Component {
 
@@ -24,10 +22,11 @@ class Employees extends React.Component {
         this.departmentFormatter = this.departmentFormatter.bind(this);
         this.getDepartmentName = this.getDepartmentName.bind(this);
         this.onRowSelect = this.onRowSelect.bind(this)
-    }
+        this.updateEmployee = React.createRef();
+        this.child = React.createRef();
+    };
 
-    getInitialState() {
-
+    getInitialState = () => {
         this.setState({
             data: null,
             departments: null,
@@ -35,15 +34,14 @@ class Employees extends React.Component {
             showAddModal: false,
             showUpdateModal: false
         });
-    }
+    };
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.refreshTable();
-    }
+    };
 
-    render() {
-
-        const { SearchBar } = Search;
+    render = () => {
+        const {SearchBar} = Search;
         const columns = [{
             dataField: 'id',
             text: 'Employee ID',
@@ -56,19 +54,19 @@ class Employees extends React.Component {
             dataField: 'surname',
             text: 'Last Name',
             sort: true
-        },{
+        }, {
             dataField: 'salary',
             text: 'Salary',
-            formatter:this.priceFormatter,
+            formatter: this.priceFormatter,
             sort: true
-        },{
+        }, {
             dataField: 'departmentId',
             text: 'Depertment',
-            formatter:this.departmentFormatter,
+            formatter: this.departmentFormatter,
             sort: true
         }];
 
-        var selectRowProp = {
+        const selectRowProp = {
             mode: "radio",
             clickToSelect: true,
             className: "selected-row",
@@ -83,7 +81,7 @@ class Employees extends React.Component {
         return (
             <div>
                 <ButtonGroup className="m-10">
-                    <Button  color="primary" onClick={this.openAddModal}><FaPlus/> Add</Button>
+                    <Button color="primary" onClick={this.openAddModal}><FaPlus/> Add</Button>
                     <Button color="warning" disabled={this.state.selectedEmployeeId === null}
                             onClick={this.openUpdateModal}><FaSync/> Update</Button>
                     <Button color="danger" disabled={this.state.selectedEmployeeId === null}
@@ -91,18 +89,17 @@ class Employees extends React.Component {
                 </ButtonGroup>
                 <ToolkitProvider
                     keyField="id"
-                    data={ this.state.data }
-                    columns={ columns }
-                    search
-                >
+                    data={this.state.data}
+                    columns={columns}
+                    search>
                     {
                         props => (
                             <div>
-                                <h3>Input something at below input field:</h3>
-                                <SearchBar { ...props.searchProps } />
-                                <hr />
+                                <SearchBar {...props.searchProps} />
+                                <hr/>
                                 <BootstrapTable
-                                    { ...props.baseProps }
+                                    {...props.baseProps}
+                                    selectRow={selectRowProp}
                                 />
                             </div>
                         )
@@ -110,22 +107,22 @@ class Employees extends React.Component {
                 </ToolkitProvider>
                 <AddEmployeeModal parent={this} ref="addEmployee"/>
 
-                <UpdateEmployeeModal parent={this} ref="updateEmployee"/>
+                <UpdateEmployeeModal parent={this} ref={this.updateEmployee}/>
             </div>
         );
-    }
+    };
 
     // Keep selected row
-    onRowSelect(row, isSelected) {
+    onRowSelect = (row, isSelected) => {
         if (isSelected) {
             this.setState({selectedEmployeeId: row.id});
         } else {
             this.setState({selectedEmployeeId: null});
         }
-    }
+    };
 
     // Department list for Select component
-    getDepartmentOptions() {
+    getDepartmentOptions = () => {
         var options = [];
         options = this.state.departments.map(function (obj) {
             var rObj = {};
@@ -135,32 +132,34 @@ class Employees extends React.Component {
         });
 
         return options;
-    }
+    };
 
     //Add modal open/close
-    closeAddModal() {
+    closeAddModal = () => {
         this.setState({showAddModal: false});
         this.refs.addEmployee.clearAddObject();
-    }
+    };
 
-    openAddModal() {
+    openAddModal = () => {
         this.refs.addEmployee.clearAddObject();
         this.setState({showAddModal: true});
-    }
+    };
 
     //Update modal open/close
-    closeUpdateModal() {
+    closeUpdateModal = () => {
         this.setState({showUpdateModal: false});
         this.refs.updateEmployee.clearUpdateObject();
-    }
+    };
 
-    openUpdateModal() {
-        this.refs.updateEmployee.fillUpdateObject();
+    openUpdateModal = () => {
+        alert(this.updateEmployee.current);
+        this.updateEmployee.current.fillUpdateObject();
         this.setState({showUpdateModal: true});
-    }
+        this.updateEmployee.current.render();
+    };
 
     //BEGIN: Delete Employee
-    onDeleteBtnClicked() {
+    onDeleteBtnClicked = () => {
 
         axios.delete('http://mattendenceserver.herokuapp.com/employees/' + this.state.selectedEmployeeId)
             .then(function (response) {
@@ -169,19 +168,19 @@ class Employees extends React.Component {
             .catch(function (error) {
                 console.log(error);
             });
-    }
+    };
 
     //END: Delete Employee
 
-    priceFormatter(cell, row) {
+    priceFormatter = (cell, row) => {
         return (<div><FaRupeeSign/>{cell}</div>);
     }
 
-    departmentFormatter(cell, row) {
+    departmentFormatter = (cell, row) => {
         return this.getDepartmentName(row.departmentId);
     }
 
-    getDepartmentName(departmentId) {
+    getDepartmentName = (departmentId) => {
 
         for (var i in this.state.departments) {
             if (this.state.departments[i].id === departmentId) {
@@ -191,7 +190,7 @@ class Employees extends React.Component {
         return '';
     }
 
-    getEmployeeById(id) {
+    getEmployeeById = (id) => {
         for (var i in this.state.data) {
             if (this.state.data[i].id === id) {
                 return this.state.data[i];
@@ -200,16 +199,16 @@ class Employees extends React.Component {
         return '';
     }
 
-    getEmployees() {
+    getEmployees = () => {
         return axios.get('http://mattendenceserver.herokuapp.com/employees');
     }
 
-    getDepartments() {
+    getDepartments = () => {
         return axios.get('http://mattendenceserver.herokuapp.com/departments');
     }
 
     //Get table data and update the state to render
-    refreshTable() {
+    refreshTable = () => {
 
         axios.all([this.getEmployees(), this.getDepartments()])
             .then(axios.spread(function (employees, departments) {
@@ -220,4 +219,5 @@ class Employees extends React.Component {
             }.bind(this)));
     }
 };
+
 export default Employees;
