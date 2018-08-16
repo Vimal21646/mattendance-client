@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {ButtonGroup, Button} from 'reactstrap';
-import {FaPlus, FaTrash, FaSync, FaRupeeSign} from 'react-icons/fa';
+import {FaPlus, FaTrash, FaSync, FaSyncAlt, FaRupeeSign} from 'react-icons/fa';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import AddEmployeeModal from './AddEmployee';
@@ -21,10 +21,9 @@ class Employees extends React.Component {
         };
         this.departmentFormatter = this.departmentFormatter.bind(this);
         this.getDepartmentName = this.getDepartmentName.bind(this);
-        this.onRowSelect = this.onRowSelect.bind(this)
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
-        this.closeUpdateModal=this.closeUpdateModal.bind(this);
+        this.closeUpdateModal = this.closeUpdateModal.bind(this);
     };
 
     getInitialState = () => {
@@ -70,9 +69,18 @@ class Employees extends React.Component {
         const selectRowProp = {
             mode: "radio",
             clickToSelect: true,
-            className: "selected-row",
-            bgColor: 'rgb(101, 148, 255)',
-            onSelect: this.onRowSelect
+            selected: [this.state.selectedEmployeeId],
+            onSelect: (row, isSelect, rowIndex, e) => {
+                if (isSelect) {
+                    this.setState(() => ({
+                        selectedEmployeeId: row.id
+                    }));
+                } else {
+                    this.setState(() => ({
+                        selectedEmployeeId: null
+                    }));
+                }
+            }
         };
 
         if (this.state == null || this.state.data == null) {
@@ -83,8 +91,8 @@ class Employees extends React.Component {
             <div>
                 <ButtonGroup className="m-10">
                     <Button color="primary" onClick={this.openAddModal}><FaPlus/> Add</Button>
-                    <Button color="warning" disabled={this.state.selectedEmployeeId === null}
-                            onClick={this.openUpdateModal}><FaSync/> Update</Button>
+                    <Button color="warning" className="text-white" disabled={this.state.selectedEmployeeId === null}
+                            onClick={this.openUpdateModal}><FaSyncAlt/> Update</Button>
                     <Button color="danger" disabled={this.state.selectedEmployeeId === null}
                             onClick={this.onDeleteBtnClicked}><FaTrash/> Delete</Button>
                 </ButtonGroup>
@@ -101,6 +109,9 @@ class Employees extends React.Component {
                                 <BootstrapTable
                                     {...props.baseProps}
                                     selectRow={selectRowProp}
+                                    striped
+                                    hover
+                                    condensed
                                 />
                             </div>
                         )
@@ -111,15 +122,6 @@ class Employees extends React.Component {
                 <UpdateEmployeeModal parent={this} ref={this.updateEmployee}/>
             </div>
         );
-    };
-
-    // Keep selected row
-    onRowSelect = (row, isSelected) => {
-        if (isSelected) {
-            this.setState({selectedEmployeeId: row.id});
-        } else {
-            this.setState({selectedEmployeeId: null});
-        }
     };
 
     // Department list for Select component
@@ -147,22 +149,21 @@ class Employees extends React.Component {
     };
 
     //Update modal open/close
-    closeUpdateModal ()  {
-        this.updateEmployee.current.state.showUpdateModal=false;
+    closeUpdateModal = () => {
+        this.updateEmployee.current.state.showUpdateModal = false;
         this.updateEmployee.current.clearUpdateObject();
 
     };
 
     openUpdateModal = () => {
-
-        this.updateEmployee.current.state.showUpdateModal=true;
+        alert("--10--");
+        this.updateEmployee.current.state.showUpdateModal = true;
         this.setState({showUpdateModal: true});
         this.updateEmployee.current.fillUpdateObject();
     };
 
     //BEGIN: Delete Employee
     onDeleteBtnClicked = () => {
-
         axios.delete('http://mattendenceserver.herokuapp.com/employees/' + this.state.selectedEmployeeId)
             .then(function (response) {
                 this.refreshTable();
@@ -183,7 +184,6 @@ class Employees extends React.Component {
     }
 
     getDepartmentName = (departmentId) => {
-
         for (var i in this.state.departments) {
             if (this.state.departments[i].id === departmentId) {
                 return this.state.departments[i].name;
@@ -211,7 +211,6 @@ class Employees extends React.Component {
 
     //Get table data and update the state to render
     refreshTable = () => {
-
         axios.all([this.getEmployees(), this.getDepartments()])
             .then(axios.spread(function (employees, departments) {
                 this.setState({
