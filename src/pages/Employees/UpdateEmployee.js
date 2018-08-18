@@ -89,7 +89,6 @@ class UpdateEmployee extends React.Component {
                             <Label>Employee department</Label>
                             <Select
                                 name="departmentsField"
-                                value={this.state.updateObject.departmentId}
                                 options={this.props.parent.getDepartmentOptions()}
                                 onChange={this.onUpdateEmployeeDepartmentChange}/>
                         </FormGroup>

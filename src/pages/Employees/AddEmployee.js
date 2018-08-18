@@ -16,6 +16,10 @@ class AddEmployee extends React.Component {
             }
         };
         this.onAddBtnClicked=this.onAddBtnClicked.bind(this);
+        this.onAddEmployeeNameChange=this.onAddEmployeeNameChange.bind(this);
+        this.onAddEmployeeSurnameChange=this.onAddEmployeeSurnameChange.bind(this);
+        this.onAddEmployeeSalaryChange=this.onAddEmployeeSalaryChange.bind(this);
+        this.onAddEmployeeDepartmentChange=this.onAddEmployeeDepartmentChange.bind(this);
     }
 
     getInitialState() {
@@ -34,7 +38,7 @@ class AddEmployee extends React.Component {
     render() {
 
         return (
-            <Modal show={this.props.parent.state.showAddModal}>
+            <Modal isOpen={this.props.parent.state.showAddModal}>
                 <ModalHeader>Add Employee</ModalHeader>
                 <ModalBody>
                     <form>
@@ -66,7 +70,6 @@ class AddEmployee extends React.Component {
                             <Label>Employee department</Label>
                             <Select
                                 name="departmentsField"
-                                value={this.state.addObject.departmentId}
                                 options={this.props.parent.getDepartmentOptions()}
                                 onChange={this.onAddEmployeeDepartmentChange}/>
                         </FormGroup>
@@ -106,7 +109,6 @@ class AddEmployee extends React.Component {
     }
 
     onAddEmployeeDepartmentChange(selection) {
-
         if (selection === null) {
             this.state.addObject.departmentId = null;
         } else {
