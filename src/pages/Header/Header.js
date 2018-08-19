@@ -3,14 +3,13 @@ import { NavLink } from 'react-router-dom';
 
 class Header extends React.Component {
 	render(){
-		
 		return (
 			<div className="header">
 				<p className="header-info">
-					Meeting React App
+					Employee Attendence App
 				</p>
 				<div className="menu">
-					<NavLink exact className="menu-link-item" activeClassName="active" to="/employees" >Employees</NavLink>
+					<NavLink exact className="menu-link-item" activeClassName="active" to="/employees" >Employee</NavLink>
 				</div>
 			</div>
 

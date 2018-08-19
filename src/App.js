@@ -16,10 +16,10 @@ class App extends Component {
                     <div>
                         <div className="header">
                             <p className="header-info">
-                                Meeting React App
+                                Employee Attendence App
                             </p>
                             <div className="menu">
-                                <NavLink exact className="menu-link-item" activeClassName="active" to="/">Home</NavLink>
+                                <NavLink exact className="menu-link-item" activeClassName="active" to="/">Employee</NavLink>
                                 <NavLink exact className="menu-link-item" activeClassName="active"
                                          to="/user">User</NavLink>
                                 <NavLink exact className="menu-link-item" activeClassName="active"

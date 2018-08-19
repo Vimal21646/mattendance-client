@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import {ButtonGroup, Button} from 'reactstrap';
 import {FaPlus, FaTrash, FaSync, FaSyncAlt, FaRupeeSign} from 'react-icons/fa';
+import ReactLoading from 'react-loading';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import AddEmployeeModal from './AddEmployee';
@@ -84,7 +85,7 @@ class Employees extends React.Component {
         };
 
         if (this.state == null || this.state.data == null) {
-            return (<div>hi..... </div>);
+            return (<div id="overlay"><div className="center"><ReactLoading type="bars" color="#FFFF" height={'10%'} width={'10%'} /></div></div>);
         }
 
         return (
