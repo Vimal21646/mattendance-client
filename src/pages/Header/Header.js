@@ -11,9 +11,11 @@ class Header extends React.Component {
                 <div className="menu">
                     <NavLink exact className="menu-link-item" activeClassName="active" to="/">Employee</NavLink>
                     <NavLink exact className="menu-link-item" activeClassName="active"
-                             to="/user">User</NavLink>
+                             to="/user">Department</NavLink>
                     <NavLink exact className="menu-link-item" activeClassName="active"
-                             to="/about">About</NavLink>
+                             to="/about">Role</NavLink>
+                    <NavLink exact className="menu-link-item" activeClassName="active"
+                             to="/about">Attedence</NavLink>
                 </div>
             </div>
         );
