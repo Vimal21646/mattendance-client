@@ -156,7 +156,6 @@ class Employees extends React.Component {
     };
 
     openUpdateModal = () => {
-        alert("--10--");
         this.updateEmployee.current.state.showUpdateModal = true;
         this.setState({showUpdateModal: true});
         this.updateEmployee.current.fillUpdateObject();

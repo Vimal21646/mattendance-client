@@ -15,16 +15,18 @@ class UpdateEmployee extends React.Component {
                 salary: '',
                 departmentId: ''
             },
-            showUpdateModal:false
-        }
+            showUpdateModal:false,
+            selectedOption:null,
+            departmentOptions:this.props.parent.getDepartmentOptions()
+        };
         this.onUpdateEmployeeNameChange = this.onUpdateEmployeeNameChange.bind(this);
         this.fillUpdateObject=this.fillUpdateObject.bind(this);
         this.clearUpdateObject=this.clearUpdateObject.bind(this);
         this.toggle=this.toggle.bind(this);
+        this.setDepartmentOption=this.setDepartmentOption.bind(this);
     };
 
     getInitialState= () =>  {
-
         return {
             updateObject: {
                 id: '',
@@ -53,7 +55,8 @@ class UpdateEmployee extends React.Component {
             showUpdateModal: !this.state.showUpdateModal
         });
     };
-    render= () =>  {
+    render() {
+
         return (
             <Modal isOpen={this.state.showUpdateModal}>
                 <ModalHeader>
@@ -89,14 +92,17 @@ class UpdateEmployee extends React.Component {
                             <Label>Employee department</Label>
                             <Select
                                 name="departmentsField"
-                                options={this.props.parent.getDepartmentOptions()}
+                                value={this.state.selectedOption}
+                                isClearable={true}
+                                isSearchable={true}
+                                options={this.state.departmentOptions}
                                 onChange={this.onUpdateEmployeeDepartmentChange}/>
                         </FormGroup>
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={this.toggle}>Close</Button>
-                    <Button color="primary" onClick={this.onUpdateBtnClicked}>Update</Button>
+                    <Button onClick={this.toggle} color="danger">Close</Button>
+                    <Button color="success" onClick={this.onUpdateBtnClicked}>Update</Button>
                 </ModalFooter>
             </Modal>
         );
@@ -111,7 +117,19 @@ class UpdateEmployee extends React.Component {
             salary: selectedEmployee.salary,
             departmentId: selectedEmployee.departmentId
         }
+
+        //set the department option
+        this.setDepartmentOption(selectedEmployee);
+
     };
+
+    setDepartmentOption(selectedEmployee) {
+        for (var i in this.state.departmentOptions) {
+            if (this.state.departmentOptions[i].value == selectedEmployee.departmentId) {
+                this.setState({selectedOption: this.state.departmentOptions[i]});
+            }
+        }
+    }
 
     clearUpdateObject= () =>  {
         this.state.updateObject.id = '';
@@ -138,7 +156,6 @@ class UpdateEmployee extends React.Component {
     };
 
     onUpdateEmployeeDepartmentChange=(selection)=> {
-
         if (selection === null) {
             this.state.updateObject.departmentId = null;
         } else {

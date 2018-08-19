@@ -13,12 +13,13 @@ class AddEmployee extends React.Component {
                 surname: '',
                 salary: '',
                 departmentId: ''
-            }
+            },
+            selectedDepartmentOption:null
         };
+
         this.onAddBtnClicked=this.onAddBtnClicked.bind(this);
         this.onAddEmployeeNameChange=this.onAddEmployeeNameChange.bind(this);
         this.onAddEmployeeSurnameChange=this.onAddEmployeeSurnameChange.bind(this);
-        this.onAddEmployeeSalaryChange=this.onAddEmployeeSalaryChange.bind(this);
         this.onAddEmployeeDepartmentChange=this.onAddEmployeeDepartmentChange.bind(this);
     }
 
@@ -70,14 +71,17 @@ class AddEmployee extends React.Component {
                             <Label>Employee department</Label>
                             <Select
                                 name="departmentsField"
+                                isClearable={true}
+                                isSearchable={true}
+                                value={this.state.addObject.departmentId}
                                 options={this.props.parent.getDepartmentOptions()}
                                 onChange={this.onAddEmployeeDepartmentChange}/>
                         </FormGroup>
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={this.props.parent.closeAddModal}>Close</Button>
-                    <Button bsStyle="primary" onClick={this.onAddBtnClicked}>Add</Button>
+                    <Button onClick={this.props.parent.closeAddModal} color="danger">Close</Button>
+                    <Button color="success" onClick={this.onAddBtnClicked}>Add</Button>
                 </ModalFooter>
             </Modal>
         );
@@ -109,10 +113,13 @@ class AddEmployee extends React.Component {
     }
 
     onAddEmployeeDepartmentChange(selection) {
+        this.setState({ selectedDepartmentOption:selection });
         if (selection === null) {
-            this.state.addObject.departmentId = null;
+            // this.state.addObject.departmentId = null;
+            this.setState({...this.state.addObject, departmentId: null});
         } else {
-            this.state.addObject.departmentId = selection.value;
+            // this.state.addObject.departmentId = selection.value;
+            this.setState({...this.state.addObject, departmentId: selection.value});
         }
 
         this.forceUpdate();
