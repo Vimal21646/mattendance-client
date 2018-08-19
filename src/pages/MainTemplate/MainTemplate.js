@@ -1,24 +1,18 @@
 import React from 'react';
-import Header from '../Header';
-import '../../styles/bootstrap-3.3.6/dist/css/bootstrap.min.css';
-import '../../styles/bootstrap-3.3.6/dist/css/bootstrap-theme.min.css';
-import '../../styles/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import '../../styles/react-select/dist/react-select.min.css';
-import '../../styles/index.css';
+import About from './../../About';
+import User from './../../User';
+import Employees from './../Employees'
+import {Route} from "react-router-dom";
+
 
 class MainTemplate extends React.Component {
 
     render() {
-
-        const { main } = this.props;
-
         return (
-            <div>
-                <Header />
-
-                <div className="container">
-                    {main}
-                </div>
+            <div className="padding">
+                <Route exact path="/" component={Employees}/>
+                <Route path="/user" component={User}/>
+                <Route path="/about" component={About}/>
             </div>
         );
     }

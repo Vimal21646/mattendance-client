@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
+import {BrowserRouter as Router} from 'react-router-dom';
 import './App.css';
-import {BrowserRouter as Router, NavLink, Route} from 'react-router-dom';
-
-import About from './About';
-import Home from './Home';
-import User from './User';
-import Employees from './pages/Employees'
+import Header from './pages/Header'
+import MainTemplate from './pages/MainTemplate'
 
 class App extends Component {
 
@@ -14,23 +11,8 @@ class App extends Component {
             <div>
                 <Router>
                     <div>
-                        <div className="header">
-                            <p className="header-info">
-                                Employee Attendence App
-                            </p>
-                            <div className="menu">
-                                <NavLink exact className="menu-link-item" activeClassName="active" to="/">Employee</NavLink>
-                                <NavLink exact className="menu-link-item" activeClassName="active"
-                                         to="/user">User</NavLink>
-                                <NavLink exact className="menu-link-item" activeClassName="active"
-                                         to="/about">About</NavLink>
-                            </div>
-                        </div>
-                        <div className="padding">
-                            <Route exact path="/" component={Employees}/>
-                            <Route path="/user" component={User}/>
-                            <Route path="/about" component={About}/>
-                        </div>
+                        <Header/>
+                        <MainTemplate/>
                     </div>
                 </Router>
             </div>
