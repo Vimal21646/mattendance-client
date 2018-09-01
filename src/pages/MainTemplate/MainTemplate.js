@@ -1,6 +1,6 @@
 import React from 'react';
 import About from './../../About';
-import User from './../../User';
+import Departments from './../Departments';
 import Employees from './../Employees'
 import {Route} from "react-router-dom";
 
@@ -11,7 +11,7 @@ class MainTemplate extends React.Component {
         return (
             <div className="padding">
                 <Route exact path="/" component={Employees}/>
-                <Route path="/user" component={User}/>
+                <Route path="/departments" component={Departments}/>
                 <Route path="/about" component={About}/>
             </div>
         );
