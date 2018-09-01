@@ -5,18 +5,18 @@ import {FaPlus, FaTrash, FaSync} from 'react-icons/fa';
 import ReactLoading from 'react-loading';
 import BootstrapTable from 'react-bootstrap-table-next';
 
-import AddDepartmentModal from './AddDepartment';
-import UpdateDepartmentModal from './UpdateDepartment';
+import AddRoleModal from './AddRole';
+import UpdateRoleModal from './UpdateRole';
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
 
 
-class Departments extends React.Component {
+class Roles extends React.Component {
 
     constructor(props) {
         super(props);
         this.state={
             data: null,
-            selectedDepartmentId: null,
+            selectedRoleId: null,
             showAddModal: false,
             showUpdateModal: false
         };
@@ -26,7 +26,7 @@ class Departments extends React.Component {
         getInitialState = () => {
             this.setState({
                 data: null,
-                selectedDepartmentId: null,
+                selectedRoleId: null,
                 showAddModal: false,
                 showUpdateModal: false
             });
@@ -41,11 +41,11 @@ class Departments extends React.Component {
         const {SearchBar} = Search;
         const columns = [{
             dataField: 'id',
-            text: 'Department ID',
+            text: 'Roles ID',
             sort: true
         }, {
             dataField: 'name',
-            text: 'Department Name',
+            text: 'Roles Name',
             sort: true
         }, {
             dataField: 'description',
@@ -56,15 +56,15 @@ class Departments extends React.Component {
         const selectRowProp = {
             mode: "radio",
             clickToSelect: true,
-            selected: [this.state.selectedDepartmentId],
+            selected: [this.state.selectedRoleId],
             onSelect: (row, isSelect, rowIndex, e) => {
                 if (isSelect) {
                     this.setState(() => ({
-                        selectedDepartmentId: row.id
+                        selectedRoleId: row.id
                     }));
                 } else {
                     this.setState(() => ({
-                        selectedDepartmentId: null
+                        selectedRoleId: null
                     }));
                 }
             }
@@ -78,9 +78,9 @@ class Departments extends React.Component {
             <div>
                 <ButtonGroup className="m-10">
                     <Button color="primary" onClick={this.openAddModal}><FaPlus/> Add</Button>
-                    <Button color="warning" className="text-white" disabled={this.state.selectedDepartmentId === null}
+                    <Button color="warning" className="text-white" disabled={this.state.selectedRoleId === null}
                             onClick={this.openUpdateModal}><FaSync/> Update</Button>
-                    <Button color="danger" disabled={this.state.selectedDepartmentId === null}
+                    <Button color="danger" disabled={this.state.selectedRoleId === null}
                             onClick={this.onDeleteBtnClicked}><FaTrash/> Delete</Button>
                 </ButtonGroup>
 
@@ -106,9 +106,9 @@ class Departments extends React.Component {
                     }
                 </ToolkitProvider>
 
-                <AddDepartmentModal parent={this} ref="addDepartment" />
+                <AddRoleModal parent={this} ref="addRole" />
 
-                <UpdateDepartmentModal parent={this} ref="updateDepartment"/>
+                <UpdateRoleModal parent={this} ref="updateRole"/>
             </div>
         );
 
@@ -118,38 +118,38 @@ class Departments extends React.Component {
     onRowSelect = (row, isSelected) => {
 
         if (isSelected) {
-            this.setState({selectedDepartmentId: row.id});
+            this.setState({selectedRoleId: row.id});
         } else {
-            this.setState({selectedDepartmentId: null});
+            this.setState({selectedRoleId: null});
         }
     }
 
     //Add modal open/close
     closeAddModal = () => {
         this.setState({showAddModal: false});
-        this.refs.addDepartment.clearAddObject();
+        this.refs.addRole.clearAddObject();
     }
 
     openAddModal = () => {
-        this.refs.addDepartment.clearAddObject();
+        this.refs.addRole.clearAddObject();
         this.setState({showAddModal: true});
     }
 
     //Update modal open/close
     closeUpdateModal = () => {
         this.setState({showUpdateModal: false});
-        this.refs.updateDepartment.clearUpdateObject();
+        this.refs.updateRole.clearUpdateObject();
     }
 
     openUpdateModal = () => {
-        this.refs.updateDepartment.fillUpdateObject();
+        this.refs.updateRole.fillUpdateObject();
         this.setState({showUpdateModal: true});
     }
 
-    //BEGIN: Delete Department
+    //BEGIN: Delete Roles
     onDeleteBtnClicked = () => {
 
-        axios.delete('http://mattendenceserver.herokuapp.com/departments/' + this.state.selectedDepartmentId)
+        axios.delete('http://mattendenceserver.herokuapp.com/departments/' + this.state.selectedRoleId)
             .then(function (response) {
                 this.refreshTable();
             }.bind(this))
@@ -157,9 +157,9 @@ class Departments extends React.Component {
                 console.log(error);
             });
     }
-    //END: Delete Department
+    //END: Delete Roles
 
-    getDepartmentById = (id) => {
+    getRoleById = (id) => {
 
         for (var i in this.state.data) {
             if (this.state.data[i].id === id) {
@@ -172,12 +172,12 @@ class Departments extends React.Component {
     //Get table data and update the state to render
     refreshTable = () => {
         axios.get('https://mattendenceserver.herokuapp.com/departments')
-            .then(function (departments) {
+            .then(function (roles) {
                 this.setState(() => ({
-                    data:departments.data
+                    data:roles.data
                 }));
             }.bind(this));
     }
 }
 
-export default Departments;
+export default Roles;
