@@ -13,17 +13,21 @@ class UpdateEmployee extends React.Component {
                 name: '',
                 surname: '',
                 salary: '',
-                departmentId: ''
+                departmentId: '',
+                roleId: ''
             },
             showUpdateModal:false,
             selectedOption:null,
-            departmentOptions:this.props.parent.getDepartmentOptions()
+            selectedRoleOption:null,
+            departmentOptions:this.props.parent.getDepartmentOptions(),
+            roleOptions:this.props.parent.getRoleOptions()
         };
         this.onUpdateEmployeeNameChange = this.onUpdateEmployeeNameChange.bind(this);
         this.fillUpdateObject=this.fillUpdateObject.bind(this);
         this.clearUpdateObject=this.clearUpdateObject.bind(this);
         this.toggle=this.toggle.bind(this);
         this.setDepartmentOption=this.setDepartmentOption.bind(this);
+        this.setRoleOption=this.setRoleOption.bind(this);
     };
 
     getInitialState= () =>  {
@@ -33,7 +37,8 @@ class UpdateEmployee extends React.Component {
                 name: '',
                 surname: '',
                 salary: '',
-                departmentId: ''
+                departmentId: '',
+                roleId: ''
             }
         }
     };
@@ -89,7 +94,7 @@ class UpdateEmployee extends React.Component {
                                 onChange={this.onUpdateEmployeeSalaryChange}/>
                             <br/>
 
-                            <Label>Employee department</Label>
+                            <Label>Employee Department</Label>
                             <Select
                                 name="departmentsField"
                                 value={this.state.selectedOption}
@@ -97,6 +102,15 @@ class UpdateEmployee extends React.Component {
                                 isSearchable={true}
                                 options={this.state.departmentOptions}
                                 onChange={this.onUpdateEmployeeDepartmentChange}/>
+                            <br/>
+                            <Label>Employee Role</Label>
+                            <Select
+                                name="rolesField"
+                                value={this.state.selectedRoleOption}
+                                isClearable={true}
+                                isSearchable={true}
+                                options={this.state.roleOptions}
+                                onChange={this.onUpdateEmployeeRoleChange}/>
                         </FormGroup>
                     </form>
                 </ModalBody>
@@ -115,11 +129,15 @@ class UpdateEmployee extends React.Component {
             name: selectedEmployee.name,
             surname: selectedEmployee.surname,
             salary: selectedEmployee.salary,
-            departmentId: selectedEmployee.departmentId
+            departmentId: selectedEmployee.departmentId,
+            roleId:selectedEmployee.roleId
         }
 
         //set the department option
         this.setDepartmentOption(selectedEmployee);
+
+        //set the role option
+        this.setRoleOption(selectedEmployee);
 
     };
 
@@ -131,12 +149,22 @@ class UpdateEmployee extends React.Component {
         }
     }
 
+    setRoleOption(selectedEmployee) {
+        for (var i in this.state.roleOptions) {
+            if (this.state.roleOptions[i].value == selectedEmployee.roleId) {
+                this.setState({selectedRoleOption: this.state.roleOptions[i]});
+            }
+        }
+    }
+
+
     clearUpdateObject= () =>  {
         this.state.updateObject.id = '';
         this.state.updateObject.name = '';
         this.state.updateObject.surname = '';
         this.state.updateObject.salary = '';
         this.state.updateObject.departmentId = '';
+        this.state.updateObject.roleId= '';
     };
 
     //Input changes
@@ -161,12 +189,22 @@ class UpdateEmployee extends React.Component {
         } else {
             this.state.updateObject.departmentId = selection.value;
         }
-
+        this.setState({ selectedOption:selection });
         this.forceUpdate();
     };
 
-    onUpdateBtnClicked=()=> {
+    onUpdateEmployeeRoleChange=(selection)=> {
+        if (selection === null) {
+            this.state.updateObject.roleId = null;
+        } else {
+            this.state.updateObject.roleId = selection.value;
+        }
+        this.setState({ selectedRoleOption:selection });
+        this.forceUpdate();
+    };
 
+
+    onUpdateBtnClicked=()=> {
         //Update employee
         axios.put('http://mattendenceserver.herokuapp.com/employees/' + this.state.updateObject.id, this.state.updateObject)
             .then(function (response) {

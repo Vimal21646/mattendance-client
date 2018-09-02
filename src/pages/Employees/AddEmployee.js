@@ -12,15 +12,19 @@ class AddEmployee extends React.Component {
                 name: '',
                 surname: '',
                 salary: '',
-                departmentId: ''
+                departmentId: '',
+                roleId: ''
             },
-            selectedDepartmentOption:null
+            selectedDepartmentOption:null,
+            selectedRoleOption:null
         };
 
         this.onAddBtnClicked=this.onAddBtnClicked.bind(this);
         this.onAddEmployeeNameChange=this.onAddEmployeeNameChange.bind(this);
         this.onAddEmployeeSurnameChange=this.onAddEmployeeSurnameChange.bind(this);
         this.onAddEmployeeDepartmentChange=this.onAddEmployeeDepartmentChange.bind(this);
+        this.onAddEmployeeRoleChange=this.onAddEmployeeRoleChange.bind(this);
+        this.onAddEmployeeSalaryChange=this.onAddEmployeeSalaryChange.bind(this);
     }
 
     getInitialState() {
@@ -31,7 +35,8 @@ class AddEmployee extends React.Component {
                 name: '',
                 surname: '',
                 salary: '',
-                departmentId: ''
+                departmentId: '',
+                roleId : ''
             }
         }
     }
@@ -44,7 +49,7 @@ class AddEmployee extends React.Component {
                 <ModalBody>
                     <form>
                         <FormGroup>
-                            <Label>Employee name</Label>
+                            <Label>Employee Name</Label>
                             <Input
                                 type="text"
                                 placeholder="Enter name"
@@ -52,7 +57,7 @@ class AddEmployee extends React.Component {
                                 onChange={this.onAddEmployeeNameChange}/>
                             <br/>
 
-                            <Label>Employee surname</Label>
+                            <Label>Employee Surname</Label>
                             <Input
                                 type="text"
                                 placeholder="Enter surname"
@@ -60,7 +65,7 @@ class AddEmployee extends React.Component {
                                 onChange={this.onAddEmployeeSurnameChange}/>
                             <br/>
 
-                            <Label>Employee salary</Label>
+                            <Label>Employee Salary</Label>
                             <Input
                                 type="text"
                                 placeholder="Enter salary"
@@ -68,14 +73,24 @@ class AddEmployee extends React.Component {
                                 onChange={this.onAddEmployeeSalaryChange}/>
                             <br/>
 
-                            <Label>Employee department</Label>
+                            <Label>Employee Department</Label>
                             <Select
                                 name="departmentsField"
                                 isClearable={true}
                                 isSearchable={true}
-                                value={this.state.addObject.departmentId}
+                                value={this.state.selectedDepartmentOption}
                                 options={this.props.parent.getDepartmentOptions()}
                                 onChange={this.onAddEmployeeDepartmentChange}/>
+                            <br/>
+
+                            <Label>Employee Role</Label>
+                            <Select
+                                name="departmentsField"
+                                isClearable={true}
+                                isSearchable={true}
+                                value={this.state.selectedRoleOption}
+                                options={this.props.parent.getRoleOptions()}
+                                onChange={this.onAddEmployeeRoleChange}/>
                         </FormGroup>
                     </form>
                 </ModalBody>
@@ -94,6 +109,7 @@ class AddEmployee extends React.Component {
         this.state.addObject.surname = '';
         this.state.addObject.salary = '';
         this.state.addObject.departmentId = '';
+        this.state.addObject.roleId = '';
     }
 
     //Input changes
@@ -113,15 +129,30 @@ class AddEmployee extends React.Component {
     }
 
     onAddEmployeeDepartmentChange(selection) {
-        this.setState({ selectedDepartmentOption:selection });
+        this.setState({ selectedDepartmentOption:selection});
+        let addObject=this.state.addObject;
+
         if (selection === null) {
-            // this.state.addObject.departmentId = null;
-            this.setState({...this.state.addObject, departmentId: null});
+            addObject.departmentId = null;
         } else {
-            // this.state.addObject.departmentId = selection.value;
-            this.setState({...this.state.addObject, departmentId: selection.value});
+            addObject.departmentId=selection.value;
         }
 
+        this.setState({addObject:addObject});
+        this.forceUpdate();
+    }
+
+    onAddEmployeeRoleChange(selection) {
+        this.setState({ selectedRoleOption:selection });
+        let addObject=this.state.addObject;
+
+        if (selection === null) {
+            addObject.roleId = null;
+        } else {
+            addObject.roleId = selection.value;
+        }
+
+        this.setState({addObject:addObject});
         this.forceUpdate();
     }
 

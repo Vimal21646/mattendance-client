@@ -215,7 +215,7 @@ class Employees extends React.Component {
     }
 
     roleFormatter = (cell, row) => {
-        return this.getRoleName(row.departmentId);
+        return this.getRoleName(row.roleId);
     }
 
     getRoleName = (roleId) => {
