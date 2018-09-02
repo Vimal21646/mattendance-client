@@ -149,7 +149,7 @@ class Roles extends React.Component {
     //BEGIN: Delete Roles
     onDeleteBtnClicked = () => {
 
-        axios.delete('http://mattendenceserver.herokuapp.com/departments/' + this.state.selectedRoleId)
+        axios.delete('http://mattendenceserver.herokuapp.com/roles/' + this.state.selectedRoleId)
             .then(function (response) {
                 this.refreshTable();
             }.bind(this))
@@ -171,7 +171,7 @@ class Roles extends React.Component {
 
     //Get table data and update the state to render
     refreshTable = () => {
-        axios.get('https://mattendenceserver.herokuapp.com/departments')
+        axios.get('https://mattendenceserver.herokuapp.com/roles')
             .then(function (roles) {
                 this.setState(() => ({
                     data:roles.data

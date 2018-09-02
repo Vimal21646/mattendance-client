@@ -83,9 +83,11 @@ class AddDepartment extends React.Component {
         this.forceUpdate();
     }
     onAddBtnClicked = () => {
+        alert(this.state.addObject.id);
         //Save department
         axios.post('https://mattendenceserver.herokuapp.com/departments', this.state.addObject)
             .then(function (response) {
+                alert(this.state.addObject.id);
                 this.props.parent.closeAddModal();
                 this.props.parent.refreshTable();
                 console.log(response);

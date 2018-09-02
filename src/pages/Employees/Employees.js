@@ -16,12 +16,15 @@ class Employees extends React.Component {
         this.state = {
             data: null,
             departments: null,
+            roles:null,
             selectedEmployeeId: null,
             showAddModal: false,
             showUpdateModal: false
         };
         this.departmentFormatter = this.departmentFormatter.bind(this);
         this.getDepartmentName = this.getDepartmentName.bind(this);
+        this.roleFormatter=this.roleFormatter.bind(this);
+        this.getRoleName=this.getRoleName.bind(this);
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
         this.closeUpdateModal = this.closeUpdateModal.bind(this);
@@ -31,6 +34,7 @@ class Employees extends React.Component {
         this.setState({
             data: null,
             departments: null,
+            roles:null,
             selectedEmployeeId: null,
             showAddModal: false,
             showUpdateModal: false
@@ -62,8 +66,13 @@ class Employees extends React.Component {
             sort: true
         }, {
             dataField: 'departmentId',
-            text: 'Depertment',
+            text: 'Department',
             formatter: this.departmentFormatter,
+            sort: true
+        },{
+            dataField: 'roleId',
+            text: 'Role',
+            formatter: this.roleFormatter,
             sort: true
         }];
 
@@ -138,6 +147,19 @@ class Employees extends React.Component {
         return options;
     };
 
+    getRoleOptions = () => {
+        var options = [];
+        options = this.state.roles.map(function (obj) {
+            var rObj = {};
+            rObj['value'] = obj['id'];
+            rObj['label'] = obj['name'];
+            return rObj;
+        });
+
+        return options;
+    };
+
+
     //Add modal open/close
     closeAddModal = () => {
         this.setState({showAddModal: false});
@@ -192,6 +214,20 @@ class Employees extends React.Component {
         return '';
     }
 
+    roleFormatter = (cell, row) => {
+        return this.getRoleName(row.departmentId);
+    }
+
+    getRoleName = (roleId) => {
+        for (var i in this.state.roles) {
+            if (this.state.roles[i].id === roleId) {
+                return this.state.roles[i].name;
+            }
+        }
+        return '';
+    }
+
+
     getEmployeeById = (id) => {
         for (var i in this.state.data) {
             if (this.state.data[i].id === id) {
@@ -209,13 +245,19 @@ class Employees extends React.Component {
         return axios.get('http://mattendenceserver.herokuapp.com/departments');
     }
 
+    getRoles = () => {
+        return axios.get('http://mattendenceserver.herokuapp.com/roles');
+    }
+
+
     //Get table data and update the state to render
     refreshTable = () => {
-        axios.all([this.getEmployees(), this.getDepartments()])
-            .then(axios.spread(function (employees, departments) {
+        axios.all([this.getEmployees(), this.getDepartments(),this.getRoles()])
+            .then(axios.spread(function (employees, departments,roles) {
                 this.setState({
                     data: employees.data,
-                    departments: departments.data
+                    departments: departments.data,
+                    roles:roles.data
                 });
             }.bind(this)));
     }

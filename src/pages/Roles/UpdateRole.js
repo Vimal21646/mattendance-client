@@ -32,25 +32,25 @@ class UpdateRole extends React.Component {
         return (
             <Modal isOpen={this.props.parent.state.showUpdateModal}>
                 <ModalHeader>
-                    Update Department
+                    Update Role
                 </ModalHeader>
                 <ModalBody>
                     <form>
                         <FormGroup>
-                            <Label>Department name</Label>
+                            <Label>Role name</Label>
                             <Input
                                 type="text"
                                 placeholder="Enter name"
                                 value={this.state.updateObject.name}
-                                onChange={this.onUpdateDepartmentNameChange}/>
+                                onChange={this.onUpdateRoleNameChange}/>
                             <br/>
 
-                            <Label>Department description</Label>
+                            <Label>Role description</Label>
                             <Input
                                 type="text"
                                 placeholder="Enter description"
                                 value={this.state.updateObject.description}
-                                onChange={this.onUpdateDepartmentDescriptionChange}/>
+                                onChange={this.onUpdateRoleDescriptionChange}/>
                             <br/>
                         </FormGroup>
                     </form>
@@ -64,12 +64,12 @@ class UpdateRole extends React.Component {
     }
 
     fillUpdateObject = () => {
-        var selectedDepartment = this.props.parent.getDepartmentById(this.props.parent.state.selectedDepartmentId);
+        var selectedRole = this.props.parent.getRoleById(this.props.parent.state.selectedRoleId);
 
         this.state.updateObject = {
-            id: selectedDepartment.id,
-            name: selectedDepartment.name,
-            description: selectedDepartment.description
+            id: selectedRole.id,
+            name: selectedRole.name,
+            description: selectedRole.description
         }
     }
     clearUpdateObject = () => {
@@ -79,18 +79,18 @@ class UpdateRole extends React.Component {
     }
 
     //Input changes
-    onUpdateDepartmentNameChange = (event) => {
+    onUpdateRoleNameChange = (event) => {
         this.state.updateObject.name = event.target.value;
         this.forceUpdate();
     }
-    onUpdateDepartmentDescriptionChange = (event) => {
+    onUpdateRoleDescriptionChange = (event) => {
         this.state.updateObject.description = event.target.value;
         this.forceUpdate();
     }
     onUpdateBtnClicked = () => {
 
-        //Update Department
-        axios.put('https://mattendenceserver.herokuapp.com/departments/' + this.state.updateObject.id, this.state.updateObject)
+        //Update Role
+        axios.put('https://mattendenceserver.herokuapp.com/roles/' + this.state.updateObject.id, this.state.updateObject)
             .then(function (response) {
                 this.props.parent.closeUpdateModal();
                 this.props.parent.refreshTable();

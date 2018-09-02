@@ -84,7 +84,7 @@ class AddRole extends React.Component {
     }
     onAddBtnClicked = () => {
         //Save department
-        axios.post('https://mattendenceserver.herokuapp.com/departments', this.state.addObject)
+        axios.post('https://mattendenceserver.herokuapp.com/roles', this.state.addObject)
             .then(function (response) {
                 this.props.parent.closeAddModal();
                 this.props.parent.refreshTable();
