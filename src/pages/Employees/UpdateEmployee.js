@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import axios from 'axios';
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input} from 'reactstrap';
+import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Alert} from 'reactstrap';
 import AddEmployee from "./AddEmployee";
 
 class UpdateEmployee extends React.Component {
@@ -13,53 +13,61 @@ class UpdateEmployee extends React.Component {
                 name: '',
                 surname: '',
                 salary: '',
+                advanceAmt: '',
                 departmentId: '',
                 roleId: ''
             },
-            showUpdateModal:false,
-            selectedOption:null,
-            selectedRoleOption:null,
-            departmentOptions:this.props.parent.getDepartmentOptions(),
-            roleOptions:this.props.parent.getRoleOptions()
+            showUpdateModal: false,
+            selectedOption: null,
+            selectedRoleOption: null,
+            visible: true,
+            departmentOptions: this.props.parent.getDepartmentOptions(),
+            roleOptions: this.props.parent.getRoleOptions()
         };
         this.onUpdateEmployeeNameChange = this.onUpdateEmployeeNameChange.bind(this);
-        this.fillUpdateObject=this.fillUpdateObject.bind(this);
-        this.clearUpdateObject=this.clearUpdateObject.bind(this);
-        this.toggle=this.toggle.bind(this);
-        this.setDepartmentOption=this.setDepartmentOption.bind(this);
-        this.setRoleOption=this.setRoleOption.bind(this);
+        this.fillUpdateObject = this.fillUpdateObject.bind(this);
+        this.clearUpdateObject = this.clearUpdateObject.bind(this);
+        this.toggle = this.toggle.bind(this);
+        this.setDepartmentOption = this.setDepartmentOption.bind(this);
+        this.setRoleOption = this.setRoleOption.bind(this);
+        this.onDismiss = this.onDismiss.bind(this);
     };
 
-    getInitialState= () =>  {
+    onDismiss = () => {
+        this.setState({visible: false});
+    }
+    getInitialState = () => {
         return {
             updateObject: {
                 id: '',
                 name: '',
                 surname: '',
                 salary: '',
+                advanceAmt: '',
                 departmentId: '',
                 roleId: ''
             }
         }
     };
 
-    shouldComponentUpdate= () =>  {
+    shouldComponentUpdate = () => {
         //console.log('EU:shouldComponentUpdate');
         return this.props.parent.state.showUpdateModal;
         // return true;
     };
 
-    closeModal= () =>  {
+    closeModal = () => {
         //console.log('EU:shouldComponentUpdate');
-        this.props.parent.state.showUpdateModal=false;
+        this.props.parent.state.showUpdateModal = false;
         // return true;
     };
 
-    toggle=()=> {
+    toggle = () => {
         this.setState({
             showUpdateModal: !this.state.showUpdateModal
         });
     };
+
     render() {
 
         return (
@@ -94,6 +102,14 @@ class UpdateEmployee extends React.Component {
                                 onChange={this.onUpdateEmployeeSalaryChange}/>
                             <br/>
 
+                            <Label>Employee Advance salary</Label>
+                            <Input
+                                type="text"
+                                placeholder="Enter Advance salary"
+                                value={this.state.updateObject.advanceAmt}
+                                onChange={this.onUpdateEmployeeAdvanceAmtChange}/>
+                            <br/>
+
                             <Label>Employee Department</Label>
                             <Select
                                 name="departmentsField"
@@ -122,15 +138,16 @@ class UpdateEmployee extends React.Component {
         );
     };
 
-    fillUpdateObject= () =>  {
+    fillUpdateObject = () => {
         var selectedEmployee = this.props.parent.getEmployeeById(this.props.parent.state.selectedEmployeeId);
         this.state.updateObject = {
             id: selectedEmployee.id,
             name: selectedEmployee.name,
             surname: selectedEmployee.surname,
             salary: selectedEmployee.salary,
+            advanceAmt: selectedEmployee.advanceAmt,
             departmentId: selectedEmployee.departmentId,
-            roleId:selectedEmployee.roleId
+            roleId: selectedEmployee.roleId
         }
 
         //set the department option
@@ -158,53 +175,65 @@ class UpdateEmployee extends React.Component {
     }
 
 
-    clearUpdateObject= () =>  {
+    clearUpdateObject = () => {
         this.state.updateObject.id = '';
         this.state.updateObject.name = '';
         this.state.updateObject.surname = '';
         this.state.updateObject.salary = '';
+        this.state.updateObject.advanceAmt = '';
         this.state.updateObject.departmentId = '';
-        this.state.updateObject.roleId= '';
+        this.state.updateObject.roleId = '';
     };
 
     //Input changes
-    onUpdateEmployeeNameChange=(event)=> {
+    onUpdateEmployeeNameChange = (event) => {
         this.state.updateObject.name = event.target.value;
         this.forceUpdate();
     };
 
-    onUpdateEmployeeSurnameChange=(event)=> {
+    onUpdateEmployeeSurnameChange = (event) => {
         this.state.updateObject.surname = event.target.value;
         this.forceUpdate();
     };
 
-    onUpdateEmployeeSalaryChange=(event)=> {
+    onUpdateEmployeeSalaryChange = (event) => {
         this.state.updateObject.salary = event.target.value;
         this.forceUpdate();
     };
 
-    onUpdateEmployeeDepartmentChange=(selection)=> {
+    onUpdateEmployeeAdvanceAmtChange = (event) => {
+        if (this.state.updateObject.salary >= event.target.value) {
+            this.state.updateObject.advanceAmt = event.target.value;
+        } else {
+            return (
+                <Alert color="info" isOpen={this.state.visible} toggle={this.onDismiss}>
+                    Advacnce amount greater then salary
+                </Alert>);
+        }
+        this.forceUpdate();
+    };
+    onUpdateEmployeeDepartmentChange = (selection) => {
         if (selection === null) {
             this.state.updateObject.departmentId = null;
         } else {
             this.state.updateObject.departmentId = selection.value;
         }
-        this.setState({ selectedOption:selection });
+        this.setState({selectedOption: selection});
         this.forceUpdate();
     };
 
-    onUpdateEmployeeRoleChange=(selection)=> {
+    onUpdateEmployeeRoleChange = (selection) => {
         if (selection === null) {
             this.state.updateObject.roleId = null;
         } else {
             this.state.updateObject.roleId = selection.value;
         }
-        this.setState({ selectedRoleOption:selection });
+        this.setState({selectedRoleOption: selection});
         this.forceUpdate();
     };
 
 
-    onUpdateBtnClicked=()=> {
+    onUpdateBtnClicked = () => {
         //Update employee
         axios.put('http://mattendenceserver.herokuapp.com/employees/' + this.state.updateObject.id, this.state.updateObject)
             .then(function (response) {

@@ -28,6 +28,7 @@ class Employees extends React.Component {
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
         this.closeUpdateModal = this.closeUpdateModal.bind(this);
+        this.curentSalaryFormatter=this.curentSalaryFormatter.bind(this);
     };
 
     getInitialState = () => {
@@ -63,6 +64,15 @@ class Employees extends React.Component {
             dataField: 'salary',
             text: 'Salary',
             formatter: this.priceFormatter,
+            sort: true
+        },{
+            dataField: 'advanceAmt',
+            text: 'Advance',
+            formatter: this.advanceAmtFormatter,
+            sort: true
+        }, {
+            text: 'Current Salary',
+            formatter: this.curentSalaryFormatter ,
             sort: true
         }, {
             dataField: 'departmentId',
@@ -199,6 +209,14 @@ class Employees extends React.Component {
 
     priceFormatter = (cell, row) => {
         return (<div><FaRupeeSign/>{cell}</div>);
+    }
+
+    advanceAmtFormatter = (cell, row) => {
+        return (<div><FaRupeeSign/>{cell}</div>);
+    }
+
+    curentSalaryFormatter = (cell, row) => {
+        return (<div><FaRupeeSign/>{row.salary-row.advanceAmt}</div>);
     }
 
     departmentFormatter = (cell, row) => {

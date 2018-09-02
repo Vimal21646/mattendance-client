@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import axios from 'axios';
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter,FormGroup, Label, Input} from 'reactstrap';
+import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input} from 'reactstrap';
 
 class AddEmployee extends React.Component {
     constructor(props) {
@@ -12,22 +12,24 @@ class AddEmployee extends React.Component {
                 name: '',
                 surname: '',
                 salary: '',
+                advanceAmt: '',
                 departmentId: '',
                 roleId: ''
             },
-            selectedDepartmentOption:null,
-            selectedRoleOption:null
+            selectedDepartmentOption: null,
+            selectedRoleOption: null
         };
 
-        this.onAddBtnClicked=this.onAddBtnClicked.bind(this);
-        this.onAddEmployeeNameChange=this.onAddEmployeeNameChange.bind(this);
-        this.onAddEmployeeSurnameChange=this.onAddEmployeeSurnameChange.bind(this);
-        this.onAddEmployeeDepartmentChange=this.onAddEmployeeDepartmentChange.bind(this);
-        this.onAddEmployeeRoleChange=this.onAddEmployeeRoleChange.bind(this);
-        this.onAddEmployeeSalaryChange=this.onAddEmployeeSalaryChange.bind(this);
+        this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
+        this.onAddEmployeeNameChange = this.onAddEmployeeNameChange.bind(this);
+        this.onAddEmployeeSurnameChange = this.onAddEmployeeSurnameChange.bind(this);
+        this.onAddEmployeeDepartmentChange = this.onAddEmployeeDepartmentChange.bind(this);
+        this.onAddEmployeeRoleChange = this.onAddEmployeeRoleChange.bind(this);
+        this.onAddEmployeeSalaryChange = this.onAddEmployeeSalaryChange.bind(this);
+        this.onAddEmployeeAdvanceChange = this.onAddEmployeeAdvanceChange.bind(this);
     }
 
-    getInitialState() {
+    getInitialState = () => {
 
         return {
             addObject: {
@@ -35,8 +37,9 @@ class AddEmployee extends React.Component {
                 name: '',
                 surname: '',
                 salary: '',
+                advanceAmt: '',
                 departmentId: '',
-                roleId : ''
+                roleId: ''
             }
         }
     }
@@ -73,6 +76,14 @@ class AddEmployee extends React.Component {
                                 onChange={this.onAddEmployeeSalaryChange}/>
                             <br/>
 
+                            <Label>Employee Advance</Label>
+                            <Input
+                                type="text"
+                                placeholder="Enter Advance"
+                                value={this.state.addObject.advanceAmt}
+                                onChange={this.onAddEmployeeAdvanceChange}/>
+                            <br/>
+
                             <Label>Employee Department</Label>
                             <Select
                                 name="departmentsField"
@@ -102,49 +113,54 @@ class AddEmployee extends React.Component {
         );
     }
 
-    clearAddObject() {
+    clearAddObject = () => {
 
         this.state.addObject.id = '';
         this.state.addObject.name = '';
         this.state.addObject.surname = '';
         this.state.addObject.salary = '';
+        this.state.addObject.advanceAmt = '';
         this.state.addObject.departmentId = '';
         this.state.addObject.roleId = '';
     }
 
     //Input changes
-    onAddEmployeeNameChange(event) {
+    onAddEmployeeNameChange = (event) => {
         this.state.addObject.name = event.target.value;
         this.forceUpdate();
     }
 
-    onAddEmployeeSurnameChange(event) {
+    onAddEmployeeSurnameChange = (event) => {
         this.state.addObject.surname = event.target.value;
         this.forceUpdate();
     }
 
-    onAddEmployeeSalaryChange(event) {
+    onAddEmployeeSalaryChange = (event) => {
         this.state.addObject.salary = event.target.value;
         this.forceUpdate();
     }
+    onAddEmployeeAdvanceChange = (event) => {
+        this.state.addObject.advanceAmt = event.target.value;
+        this.forceUpdate();
+    }
 
-    onAddEmployeeDepartmentChange(selection) {
-        this.setState({ selectedDepartmentOption:selection});
-        let addObject=this.state.addObject;
+    onAddEmployeeDepartmentChange = (selection) => {
+        this.setState({selectedDepartmentOption: selection});
+        let addObject = this.state.addObject;
 
         if (selection === null) {
             addObject.departmentId = null;
         } else {
-            addObject.departmentId=selection.value;
+            addObject.departmentId = selection.value;
         }
 
-        this.setState({addObject:addObject});
+        this.setState({addObject: addObject});
         this.forceUpdate();
     }
 
-    onAddEmployeeRoleChange(selection) {
-        this.setState({ selectedRoleOption:selection });
-        let addObject=this.state.addObject;
+    onAddEmployeeRoleChange = (selection) => {
+        this.setState({selectedRoleOption: selection});
+        let addObject = this.state.addObject;
 
         if (selection === null) {
             addObject.roleId = null;
@@ -152,11 +168,11 @@ class AddEmployee extends React.Component {
             addObject.roleId = selection.value;
         }
 
-        this.setState({addObject:addObject});
+        this.setState({addObject: addObject});
         this.forceUpdate();
     }
 
-    onAddBtnClicked() {
+    onAddBtnClicked = () => {
 
         //Save employee
         axios.post('http://mattendenceserver.herokuapp.com/employees/', this.state.addObject)
