@@ -216,7 +216,8 @@ class Employees extends React.Component {
     }
 
     curentSalaryFormatter = (cell, row) => {
-        return (<div><FaRupeeSign/>{row.salary-row.advanceAmt}</div>);
+
+        return (<div><FaRupeeSign/>{Number(row.salary)-Number(row.advanceAmt)}</div>);
     }
 
     departmentFormatter = (cell, row) => {
