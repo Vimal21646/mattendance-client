@@ -67,11 +67,11 @@ class Employees extends React.Component {
             sort: true
         },{
             dataField: 'advanceAmt',
-            text: 'Advance',
+            text: 'Total Advance',
             formatter: this.advanceAmtFormatter,
             sort: true
         }, {
-            text: 'Current Salary',
+            text: 'Net Salary',
             formatter: this.curentSalaryFormatter ,
             sort: true
         }, {

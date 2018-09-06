@@ -15,6 +15,8 @@ class Header extends React.Component {
                     <NavLink exact className="menu-link-item" activeClassName="active"
                              to="/roles">Roles</NavLink>
                     <NavLink exact className="menu-link-item" activeClassName="active"
+                             to="/advances">Advances</NavLink>
+                    <NavLink exact className="menu-link-item" activeClassName="active"
                              to="/about">Attedence</NavLink>
                 </div>
             </div>
