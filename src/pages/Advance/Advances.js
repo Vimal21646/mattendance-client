@@ -42,7 +42,7 @@ class Advances extends React.Component {
     render() {
         const {SearchBar} = Search;
         const columns = [{
-            dataField: 'id',
+            dataField: 'employee.id',
             text: 'Employee ID',
             sort: true
         }, {
@@ -54,9 +54,11 @@ class Advances extends React.Component {
             text: 'Advance Amount',
             sort: true
         }, {
+            dataField:"advanceDate",
             text: 'Date',
-            sort: true,
-            formatter: this.advanceTimestampFormatter
+            sort: true
+            // ,
+            // formatter: this.advanceTimestampFormatter
         }];
 
         const selectRowProp = {
@@ -85,7 +87,6 @@ class Advances extends React.Component {
         return (
             <div>
                 <ButtonGroup className="m-10">
-                    <Button color="primary" onClick={this.openAddModal}><FaPlus/> Add</Button>
                     <Button color="warning" className="text-white" disabled={this.state.selectedAdvanceId === null}
                             onClick={this.openUpdateModal}><FaSync/> Update</Button>
                     <Button color="danger" disabled={this.state.selectedAdvanceId === null}
@@ -159,7 +160,7 @@ class Advances extends React.Component {
     //BEGIN: Delete Department
     onDeleteBtnClicked = () => {
 
-        axios.delete('http://mattendenceserver.herokuapp.com/advances/' + this.state.selectedDepartmentId)
+        axios.delete('http://mattendenceserver.herokuapp.com/advances/' + this.state.selectedAdvanceId)
             .then(function (response) {
                 this.refreshTable();
             }.bind(this))

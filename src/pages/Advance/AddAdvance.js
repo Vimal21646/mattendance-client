@@ -1,8 +1,20 @@
 import React from 'react';
 import axios from 'axios';
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Alert} from 'reactstrap';
+import {
+    Button,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    FormGroup,
+    Label,
+    Input,
+    Alert,
+    FormText,
+    FormFeedback
+} from 'reactstrap';
 import DatePicker from 'react-datepicker';
-
+import {FaRupeeSign} from 'react-icons/fa';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -15,7 +27,8 @@ class AddDepartment extends React.Component {
                 employeeId: '',
                 advanceAmt: '',
                 advanceDate: new Date()
-            }
+            },
+            isAdvanceAmtInvalid:false
         }
         this.onAddAdvanceAmtChange = this.onAddAdvanceAmtChange.bind(this);
         this.handleAdvanceAmtDate = this.handleAdvanceAmtDate.bind(this);
@@ -28,7 +41,8 @@ class AddDepartment extends React.Component {
             addObject: {
                 employeeId: '',
                 advanceAmt: '',
-                advanceDate: new Date()
+                advanceDate: new Date(),
+                isAdvanceAmtInvalid:false
             }
         }
     }
@@ -42,19 +56,27 @@ class AddDepartment extends React.Component {
                 <ModalBody>
                     <form>
                         <FormGroup>
+                            <Label>Salary</Label><br/>
+                            <Input plaintext><FaRupeeSign/>{this.props.parent.state.selectedEmployeeSalary}</Input>
+                        </FormGroup>
+                        <FormGroup>
                             <Label>Advance Amount</Label>
                             <Input
                                 type="text"
                                 placeholder="Enter Amount in Rupees"
                                 value={this.state.addObject.advanceAmt}
-                                onChange={this.onAddAdvanceAmtChange}/>
-                            <br/>
-
+                                onChange={this.onAddAdvanceAmtChange} invalid={this.state.isAdvanceAmtInvalid}/>
+                            <FormFeedback tooltip>Advance amount is greater than salary</FormFeedback>
+                        </FormGroup>
+                        <br/>
+                        <FormGroup>
                             <Label>Advance Amount Date</Label>
                             <DatePicker className="form-control" placeholderText="Select Advance Date"
-                                        onChange={this.handleAdvanceAmtDate} selected={this.state.addObject.advanceDate}/>
-                            <br/>
+                                        onChange={this.handleAdvanceAmtDate}
+                                        selected={this.state.addObject.advanceDate}
+                                        dateFormat="DD/MM/YYYY"/>
                         </FormGroup>
+                        <br/>
                     </form>
                 </ModalBody>
                 <ModalFooter>
@@ -74,13 +96,10 @@ class AddDepartment extends React.Component {
     //Input changes
     onAddAdvanceAmtChange = (event) => {
         if (this.props.parent.state.selectedEmployeeSalary >= event.target.value) {
-            this.state.addObject.employeeId=this.props.parent.state.selectedEmployeeId;
+            this.state.addObject.employeeId = this.props.parent.state.selectedEmployeeId;
             this.state.addObject.advanceAmt = event.target.value;
         } else {
-            return (
-                <Alert color="info" isOpen={this.state.visible} toggle={this.onDismiss}>
-                    Advacnce amount greater then salary
-                </Alert>);
+            this.state.isAdvanceAmtInvalid=true;
         }
 
         this.forceUpdate();
@@ -88,8 +107,8 @@ class AddDepartment extends React.Component {
 
     handleAdvanceAmtDate = (date) => {
         let addObject = this.state.addObject;
-        addObject.advanceDate=date;
-        this.setState({addObject:addObject});
+        addObject.advanceDate = date;
+        this.setState({addObject: addObject});
         this.forceUpdate();
     }
     onAddBtnClicked = () => {

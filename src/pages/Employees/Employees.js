@@ -21,8 +21,8 @@ class Employees extends React.Component {
             selectedEmployeeId: null,
             showAddModal: false,
             showUpdateModal: false,
-            showAddAdvanceModal:false,
-            selectedEmployeeSalary:''
+            showAddAdvanceModal: false,
+            selectedEmployeeSalary: ''
         };
         this.departmentFormatter = this.departmentFormatter.bind(this);
         this.getDepartmentName = this.getDepartmentName.bind(this);
@@ -33,7 +33,6 @@ class Employees extends React.Component {
         this.closeUpdateModal = this.closeUpdateModal.bind(this);
         this.curentSalaryFormatter = this.curentSalaryFormatter.bind(this);
         this.employeeNameFormatter = this.employeeNameFormatter.bind(this);
-        this.addAdvance=this.addAdvance.bind(this);
     };
 
     getInitialState = () => {
@@ -44,8 +43,8 @@ class Employees extends React.Component {
             selectedEmployeeId: null,
             showAddModal: false,
             showUpdateModal: false,
-            showAddAdvanceModal:false,
-            selectedEmployeeSalary:''
+            showAddAdvanceModal: false,
+            selectedEmployeeSalary: ''
         });
     };
 
@@ -56,9 +55,6 @@ class Employees extends React.Component {
     render = () => {
         const {SearchBar} = Search;
         const columns = [{
-            text:"Advance",
-            formatter:this.addAdvance
-        },{
             dataField: 'id',
             text: 'Employee ID',
             sort: true
@@ -100,12 +96,12 @@ class Employees extends React.Component {
                 if (isSelect) {
                     this.setState(() => ({
                         selectedEmployeeId: row.id,
-                        selectedEmployeeSalary:row.salary
+                        selectedEmployeeSalary: row.salary
                     }));
                 } else {
                     this.setState(() => ({
                         selectedEmployeeId: null,
-                        selectedEmployeeSalary:null
+                        selectedEmployeeSalary: null
                     }));
                 }
             }
@@ -125,6 +121,8 @@ class Employees extends React.Component {
                             onClick={this.openUpdateModal}><FaSyncAlt/> Update</Button>
                     <Button color="danger" disabled={this.state.selectedEmployeeId === null}
                             onClick={this.onDeleteBtnClicked}><FaTrash/> Delete</Button>
+                    <Button color="primary" onClick={this.openAddAdvance}
+                            disabled={this.state.selectedEmployeeId === null}><FaPlus/> Add Advance</Button>
                 </ButtonGroup>
                 <ToolkitProvider
                     keyField="id"
@@ -154,9 +152,6 @@ class Employees extends React.Component {
         );
     };
 
-    addAdvance=(cell, row)=>{
-        return (<Button color="primary" onClick={this.openAddAdvance}><FaPlus/> Add</Button>);
-    }
     employeeNameFormatter = (cell, row) => {
         return row.name + ' ' + row.surname;
     }
@@ -191,7 +186,7 @@ class Employees extends React.Component {
         this.setState({showAddModal: false});
         this.refs.addEmployee.clearAddObject();
     };
-    closeAddAdvanceModal=()=>{
+    closeAddAdvanceModal = () => {
         this.setState({showAddAdvanceModal: false});
         this.refs.addAdvance.clearAddObject();
     };
@@ -200,7 +195,7 @@ class Employees extends React.Component {
         this.setState({showAddModal: true});
     };
 
-    openAddAdvance=()=>{
+    openAddAdvance = () => {
         this.refs.addAdvance.clearAddObject();
         this.setState({showAddAdvanceModal: true});
     }
