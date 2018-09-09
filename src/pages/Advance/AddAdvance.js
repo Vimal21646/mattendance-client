@@ -9,8 +9,6 @@ import {
     FormGroup,
     Label,
     Input,
-    Alert,
-    FormText,
     FormFeedback
 } from 'reactstrap';
 import DatePicker from 'react-datepicker';

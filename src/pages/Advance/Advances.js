@@ -4,8 +4,6 @@ import {ButtonGroup, Button} from 'reactstrap';
 import {FaPlus, FaTrash, FaSync} from 'react-icons/fa';
 import ReactLoading from 'react-loading';
 import BootstrapTable from 'react-bootstrap-table-next';
-
-import AddAdvanceModal from './AddAdvance';
 import UpdateAdvanceModal from './UpdateAdvance';
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
 import Timestamp from 'react-timestamp';
@@ -16,9 +14,12 @@ class Advances extends React.Component {
         super(props);
         this.state = {
             data: null,
+            selectedEmployeeSalary:'',
             selectedAdvanceId: null,
             showAddModal: false,
-            showUpdateModal: false
+            showUpdateModal: false,
+            selectedAdvanceAmt:'',
+            selectedAdvanceDate:null
         };
         this.child = React.createRef();
         this.employeeNameFormatter=this.employeeNameFormatter.bind(this);
@@ -30,7 +31,9 @@ class Advances extends React.Component {
             data: null,
             selectedAdvanceId: null,
             showAddModal: false,
-            showUpdateModal: false
+            showUpdateModal: false,
+            selectedAdvanceAmt:'',
+            selectedAdvanceDate:null
         });
 
     }
@@ -68,11 +71,17 @@ class Advances extends React.Component {
             onSelect: (row, isSelect, rowIndex, e) => {
                 if (isSelect) {
                     this.setState(() => ({
-                        selectedAdvanceId: row.id
+                        selectedAdvanceId: row.id,
+                        selectedEmployeeSalary:row.employee.salary,
+                        selectedAdvanceAmt:row.advanceAmt,
+                        selectedAdvanceDate:row.advanceDate
                     }));
                 } else {
                     this.setState(() => ({
-                        selectedAdvanceId: null
+                        selectedAdvanceId: null,
+                        selectedEmployeeSalary:null,
+                        selectedAdvanceAmt:null,
+                        selectedAdvanceDate:null
                     }));
                 }
             }
@@ -114,9 +123,6 @@ class Advances extends React.Component {
                         )
                     }
                 </ToolkitProvider>
-
-                <AddAdvanceModal parent={this} ref="addAdvance"/>
-
                 <UpdateAdvanceModal parent={this} ref="updateAdvance"/>
             </div>
         );
