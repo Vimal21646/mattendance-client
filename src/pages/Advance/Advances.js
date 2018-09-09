@@ -8,7 +8,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import AddAdvanceModal from './AddAdvance';
 import UpdateAdvanceModal from './UpdateAdvance';
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
-
+import Timestamp from 'react-timestamp';
 
 class Advances extends React.Component {
 
@@ -22,6 +22,7 @@ class Advances extends React.Component {
         };
         this.child = React.createRef();
         this.employeeNameFormatter=this.employeeNameFormatter.bind(this);
+        this.advanceTimestampFormatter=this.advanceTimestampFormatter.bind(this);
     }
 
     getInitialState = () => {
@@ -53,9 +54,9 @@ class Advances extends React.Component {
             text: 'Advance Amount',
             sort: true
         }, {
-            dataField: 'advanceDate',
             text: 'Date',
-            sort: true
+            sort: true,
+            formatter: this.advanceTimestampFormatter
         }];
 
         const selectRowProp = {
@@ -136,7 +137,7 @@ class Advances extends React.Component {
     //Add modal open/close
     closeAddModal = () => {
         this.setState({showAddModal: false});
-        this.refs.addDepartment.clearAddObject();
+        this.refs.addAdvance.clearAddObject();
     }
 
     openAddModal = () => {
@@ -176,6 +177,10 @@ class Advances extends React.Component {
             }
         }
         return '';
+    }
+
+    advanceTimestampFormatter=(cell, row)=>{
+        return <Timestamp time={row.advanceDate} utc={true} format='full'/>;
     }
 
     //Get table data and update the state to render

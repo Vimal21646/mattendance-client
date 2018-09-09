@@ -7,6 +7,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 
 import AddEmployeeModal from './AddEmployee';
 import UpdateEmployeeModal from './UpdateEmployee';
+import AddAdvances from './../Advance/AddAdvance';
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 
 class Employees extends React.Component {
@@ -16,29 +17,35 @@ class Employees extends React.Component {
         this.state = {
             data: null,
             departments: null,
-            roles:null,
+            roles: null,
             selectedEmployeeId: null,
             showAddModal: false,
-            showUpdateModal: false
+            showUpdateModal: false,
+            showAddAdvanceModal:false,
+            selectedEmployeeSalary:''
         };
         this.departmentFormatter = this.departmentFormatter.bind(this);
         this.getDepartmentName = this.getDepartmentName.bind(this);
-        this.roleFormatter=this.roleFormatter.bind(this);
-        this.getRoleName=this.getRoleName.bind(this);
+        this.roleFormatter = this.roleFormatter.bind(this);
+        this.getRoleName = this.getRoleName.bind(this);
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
         this.closeUpdateModal = this.closeUpdateModal.bind(this);
-        this.curentSalaryFormatter=this.curentSalaryFormatter.bind(this);
+        this.curentSalaryFormatter = this.curentSalaryFormatter.bind(this);
+        this.employeeNameFormatter = this.employeeNameFormatter.bind(this);
+        this.addAdvance=this.addAdvance.bind(this);
     };
 
     getInitialState = () => {
         this.setState({
             data: null,
             departments: null,
-            roles:null,
+            roles: null,
             selectedEmployeeId: null,
             showAddModal: false,
-            showUpdateModal: false
+            showUpdateModal: false,
+            showAddAdvanceModal:false,
+            selectedEmployeeSalary:''
         });
     };
 
@@ -49,37 +56,36 @@ class Employees extends React.Component {
     render = () => {
         const {SearchBar} = Search;
         const columns = [{
+            text:"Advance",
+            formatter:this.addAdvance
+        },{
             dataField: 'id',
             text: 'Employee ID',
             sort: true
         }, {
-            dataField: 'name',
-            text: 'First Name',
-            sort: true
-        }, {
-            dataField: 'surname',
-            text: 'Last Name',
-            sort: true
+            text: 'Employee Name',
+            sort: true,
+            formatter: this.employeeNameFormatter
         }, {
             dataField: 'salary',
             text: 'Salary',
             formatter: this.priceFormatter,
             sort: true
-        },{
+        }, {
             dataField: 'advanceAmt',
             text: 'Total Advance',
             formatter: this.advanceAmtFormatter,
             sort: true
         }, {
             text: 'Net Salary',
-            formatter: this.curentSalaryFormatter ,
+            formatter: this.curentSalaryFormatter,
             sort: true
         }, {
             dataField: 'departmentId',
             text: 'Department',
             formatter: this.departmentFormatter,
             sort: true
-        },{
+        }, {
             dataField: 'roleId',
             text: 'Role',
             formatter: this.roleFormatter,
@@ -93,18 +99,22 @@ class Employees extends React.Component {
             onSelect: (row, isSelect, rowIndex, e) => {
                 if (isSelect) {
                     this.setState(() => ({
-                        selectedEmployeeId: row.id
+                        selectedEmployeeId: row.id,
+                        selectedEmployeeSalary:row.salary
                     }));
                 } else {
                     this.setState(() => ({
-                        selectedEmployeeId: null
+                        selectedEmployeeId: null,
+                        selectedEmployeeSalary:null
                     }));
                 }
             }
         };
 
         if (this.state == null || this.state.data == null) {
-            return (<div id="overlay"><div className="center"><ReactLoading type="bars" color="#FFFF" height={'10%'} width={'10%'} /></div></div>);
+            return (<div id="overlay">
+                <div className="center"><ReactLoading type="bars" color="#FFFF" height={'10%'} width={'10%'}/></div>
+            </div>);
         }
 
         return (
@@ -138,12 +148,18 @@ class Employees extends React.Component {
                     }
                 </ToolkitProvider>
                 <AddEmployeeModal parent={this} ref="addEmployee"/>
-
+                <AddAdvances parent={this} ref="addAdvance"/>
                 <UpdateEmployeeModal parent={this} ref={this.updateEmployee}/>
             </div>
         );
     };
 
+    addAdvance=(cell, row)=>{
+        return (<Button color="primary" onClick={this.openAddAdvance}><FaPlus/> Add</Button>);
+    }
+    employeeNameFormatter = (cell, row) => {
+        return row.name + ' ' + row.surname;
+    }
     // Department list for Select component
     getDepartmentOptions = () => {
         var options = [];
@@ -175,12 +191,19 @@ class Employees extends React.Component {
         this.setState({showAddModal: false});
         this.refs.addEmployee.clearAddObject();
     };
-
+    closeAddAdvanceModal=()=>{
+        this.setState({showAddAdvanceModal: false});
+        this.refs.addAdvance.clearAddObject();
+    };
     openAddModal = () => {
         this.refs.addEmployee.clearAddObject();
         this.setState({showAddModal: true});
     };
 
+    openAddAdvance=()=>{
+        this.refs.addAdvance.clearAddObject();
+        this.setState({showAddAdvanceModal: true});
+    }
     //Update modal open/close
     closeUpdateModal = () => {
         this.updateEmployee.current.state.showUpdateModal = false;
@@ -217,7 +240,7 @@ class Employees extends React.Component {
 
     curentSalaryFormatter = (cell, row) => {
 
-        return (<div><FaRupeeSign/>{Number(row.salary)-Number(row.advanceAmt)}</div>);
+        return (<div><FaRupeeSign/>{Number(row.salary) - Number(row.advanceAmt)}</div>);
     }
 
     departmentFormatter = (cell, row) => {
@@ -271,12 +294,12 @@ class Employees extends React.Component {
 
     //Get table data and update the state to render
     refreshTable = () => {
-        axios.all([this.getEmployees(), this.getDepartments(),this.getRoles()])
-            .then(axios.spread(function (employees, departments,roles) {
+        axios.all([this.getEmployees(), this.getDepartments(), this.getRoles()])
+            .then(axios.spread(function (employees, departments, roles) {
                 this.setState({
                     data: employees.data,
                     departments: departments.data,
-                    roles:roles.data
+                    roles: roles.data
                 });
             }.bind(this)));
     }

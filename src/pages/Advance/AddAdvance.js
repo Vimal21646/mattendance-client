@@ -1,94 +1,102 @@
 import React from 'react';
 import axios from 'axios';
-import {FaPlus, FaTrash, FaSync, FaSyncAlt, FaRupeeSign} from 'react-icons/fa';
-import ReactLoading from 'react-loading';
-import BootstrapTable from 'react-bootstrap-table-next';
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter,FormGroup, Label, Input} from 'reactstrap';
+import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Alert} from 'reactstrap';
+import DatePicker from 'react-datepicker';
+
+
+import 'react-datepicker/dist/react-datepicker.css';
 
 class AddDepartment extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             addObject: {
-                id: '',
-                name: '',
-                description: ''
+                employeeId: '',
+                advanceAmt: '',
+                advanceDate: new Date()
             }
         }
-        this.onAddDepartmentNameChange=this.onAddDepartmentNameChange.bind(this);
-        this.onAddDepartmentDescriptionChange=this.onAddDepartmentDescriptionChange.bind(this);
-        this.onAddBtnClicked=this.onAddBtnClicked.bind(this);
+        this.onAddAdvanceAmtChange = this.onAddAdvanceAmtChange.bind(this);
+        this.handleAdvanceAmtDate = this.handleAdvanceAmtDate.bind(this);
+        this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
 
     }
 
     getInitialState = () => {
         return {
             addObject: {
-                id: '',
-                name: '',
-                description: ''
+                employeeId: '',
+                advanceAmt: '',
+                advanceDate: new Date()
             }
         }
     }
 
     render() {
         return (
-            <Modal isOpen={this.props.parent.state.showAddModal}>
+            <Modal isOpen={this.props.parent.state.showAddAdvanceModal}>
                 <ModalHeader>
                     Add Department
                 </ModalHeader>
                 <ModalBody>
                     <form>
                         <FormGroup>
-                            <Label>Department name</Label>
+                            <Label>Advance Amount</Label>
                             <Input
                                 type="text"
-                                placeholder="Enter name"
-                                value={this.state.addObject.name}
-                                onChange={this.onAddDepartmentNameChange}/>
+                                placeholder="Enter Amount in Rupees"
+                                value={this.state.addObject.advanceAmt}
+                                onChange={this.onAddAdvanceAmtChange}/>
                             <br/>
 
-                            <Label>Department description</Label>
-                            <Input
-                                type="text"
-                                placeholder="Enter description"
-                                value={this.state.addObject.description}
-                                onChange={this.onAddDepartmentDescriptionChange}/>
+                            <Label>Advance Amount Date</Label>
+                            <DatePicker className="form-control" placeholderText="Select Advance Date"
+                                        onChange={this.handleAdvanceAmtDate} selected={this.state.addObject.advanceDate}/>
                             <br/>
                         </FormGroup>
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="danger" onClick={this.props.parent.closeAddModal}>Close</Button>
+                    <Button color="danger" onClick={this.props.parent.closeAddAdvanceModal}>Close</Button>
                     <Button color="success" onClick={this.onAddBtnClicked}>Add</Button>
                 </ModalFooter>
             </Modal>
         );
     }
+
     clearAddObject = () => {
-        this.state.addObject.id = '';
-        this.state.addObject.name = '';
-        this.state.addObject.description = '';
+        this.state.addObject.employeeId = '';
+        this.state.addObject.advanceAmt = '';
+        this.state.addObject.advanceDate = '';
     }
 
     //Input changes
-    onAddDepartmentNameChange = (event) => {
-        this.state.addObject.name = event.target.value;
+    onAddAdvanceAmtChange = (event) => {
+        if (this.props.parent.state.selectedEmployeeSalary >= event.target.value) {
+            this.state.addObject.employeeId=this.props.parent.state.selectedEmployeeId;
+            this.state.addObject.advanceAmt = event.target.value;
+        } else {
+            return (
+                <Alert color="info" isOpen={this.state.visible} toggle={this.onDismiss}>
+                    Advacnce amount greater then salary
+                </Alert>);
+        }
+
         this.forceUpdate();
     }
 
-    onAddDepartmentDescriptionChange = (event) => {
-        this.state.addObject.description = event.target.value;
+    handleAdvanceAmtDate = (date) => {
+        let addObject = this.state.addObject;
+        addObject.advanceDate=date;
+        this.setState({addObject:addObject});
         this.forceUpdate();
     }
     onAddBtnClicked = () => {
-        alert(this.state.addObject.id);
-        //Save department
-        axios.post('https://mattendenceserver.herokuapp.com/departments', this.state.addObject)
+        //Save advances
+        axios.post('https://mattendenceserver.herokuapp.com/advances', this.state.addObject)
             .then(function (response) {
-                alert(this.state.addObject.id);
-                this.props.parent.closeAddModal();
+                this.props.parent.closeAddAdvanceModal();
                 this.props.parent.refreshTable();
                 console.log(response);
             }.bind(this))
