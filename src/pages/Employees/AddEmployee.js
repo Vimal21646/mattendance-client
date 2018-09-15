@@ -2,6 +2,8 @@ import React from 'react';
 import Select from 'react-select';
 import axios from 'axios';
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input} from 'reactstrap';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 class AddEmployee extends React.Component {
     constructor(props) {
@@ -13,10 +15,9 @@ class AddEmployee extends React.Component {
                 surname: '',
                 salary: '',
                 advanceAmt: '',
-                departmentId: '',
+                dateOfJoining: '',
                 roleId: ''
             },
-            selectedDepartmentOption: null,
             selectedRoleOption: null
         };
 
@@ -27,6 +28,7 @@ class AddEmployee extends React.Component {
         this.onAddEmployeeRoleChange = this.onAddEmployeeRoleChange.bind(this);
         this.onAddEmployeeSalaryChange = this.onAddEmployeeSalaryChange.bind(this);
         this.onAddEmployeeAdvanceChange = this.onAddEmployeeAdvanceChange.bind(this);
+        this.handleDateOfJoining = this.handleDateOfJoining.bind(this);
     }
 
     getInitialState = () => {
@@ -38,7 +40,7 @@ class AddEmployee extends React.Component {
                 surname: '',
                 salary: '',
                 advanceAmt: '',
-                departmentId: '',
+                dateOfJoining: '',
                 roleId: ''
             }
         }
@@ -84,19 +86,15 @@ class AddEmployee extends React.Component {
                                 onChange={this.onAddEmployeeAdvanceChange}/>
                             <br/>
 
-                            <Label>Employee Department</Label>
-                            <Select
-                                name="departmentsField"
-                                isClearable={true}
-                                isSearchable={true}
-                                value={this.state.selectedDepartmentOption}
-                                options={this.props.parent.getDepartmentOptions()}
-                                onChange={this.onAddEmployeeDepartmentChange}/>
+                            <Label>Employee Joining Date</Label>
+                            <DatePicker className="form-control" placeholderText="Select Date of Joining"
+                                        onChange={this.handleDateOfJoining}
+                                        selected={this.state.addObject.dateOfJoining}
+                                        dateFormat="DD/MM/YYYY"/>
                             <br/>
-
                             <Label>Employee Role</Label>
                             <Select
-                                name="departmentsField"
+                                name="rolesField"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.selectedRoleOption}
@@ -168,6 +166,13 @@ class AddEmployee extends React.Component {
             addObject.roleId = selection.value;
         }
 
+        this.setState({addObject: addObject});
+        this.forceUpdate();
+    }
+
+    handleDateOfJoining = (date) => {
+        let addObject = this.state.addObject;
+        addObject.dateOfJoining = date;
         this.setState({addObject: addObject});
         this.forceUpdate();
     }

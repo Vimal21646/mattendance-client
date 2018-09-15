@@ -9,6 +9,7 @@ import AddEmployeeModal from './AddEmployee';
 import UpdateEmployeeModal from './UpdateEmployee';
 import AddAdvances from './../Advance/AddAdvance';
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
+import Timestamp from "react-timestamp";
 
 class Employees extends React.Component {
 
@@ -24,7 +25,7 @@ class Employees extends React.Component {
             showAddAdvanceModal: false,
             selectedEmployeeSalary: ''
         };
-        this.departmentFormatter = this.departmentFormatter.bind(this);
+        this.dateOfJoiningFormatter = this.dateOfJoiningFormatter.bind(this);
         this.getDepartmentName = this.getDepartmentName.bind(this);
         this.roleFormatter = this.roleFormatter.bind(this);
         this.getRoleName = this.getRoleName.bind(this);
@@ -77,9 +78,9 @@ class Employees extends React.Component {
             formatter: this.curentSalaryFormatter,
             sort: true
         }, {
-            dataField: 'departmentId',
-            text: 'Department',
-            formatter: this.departmentFormatter,
+            dataField: 'dateOfJoining',
+            text: 'Date of Joining',
+            formatter: this.dateOfJoiningFormatter,
             sort: true
         }, {
             dataField: 'roleId',
@@ -240,6 +241,10 @@ class Employees extends React.Component {
 
     departmentFormatter = (cell, row) => {
         return this.getDepartmentName(row.departmentId);
+    }
+
+    dateOfJoiningFormatter=(cell, row)=>{
+        return <Timestamp time={new Date(row.dateOfJoining)} utc={true} format='date'/>;
     }
 
     getDepartmentName = (departmentId) => {

@@ -187,7 +187,7 @@ class Advances extends React.Component {
     }
 
     advanceTimestampFormatter=(cell, row)=>{
-        return <Timestamp time={row.advanceDate} utc={true} format='full'/>;
+        return <Timestamp time={row.advanceDate} utc={true} format='date'/>;
     }
 
     //Get table data and update the state to render
