@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import {CustomInput, ButtonGroup, Button} from 'reactstrap';
 import {FaPlus, FaTrash, FaDownload, FaRupeeSign} from 'react-icons/fa';
@@ -7,8 +7,38 @@ import BootstrapTable from 'react-bootstrap-table-next';
 
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 import Timestamp from "react-timestamp";
+import * as PropTypes from "prop-types";
 
-class Employees extends React.Component {
+class CustomCheckBox extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isChecked:false
+        };
+        // dataArray.push({"employee_id": this.props.dataValue, "attendence_date": new Date()});
+    };
+
+    render() {
+        return (<div className="custom-checkbox custom-control" align="center">
+            <input type="checkbox" id={this.props.id} className="custom-control-input" value={this.state.isChecked}/><label
+            className="custom-control-label" htmlFor={this.props.id} onClick={this.handleCheckBoxClick}/>
+        </div>);
+    }
+
+    handleCheckBoxClick=()=>{
+        this.setState({
+            isChecked:!this.state.isChecked
+        });
+
+        this.props.dataArray[this.props.index][this.props.key]=!this.state.isChecked;
+        alert(this.props.dataArray[this.props.index][this.props.key]);
+    }
+}
+
+CustomCheckBox.propTypes = {id: PropTypes.any,dataArray:[],index:PropTypes.any,key:PropTypes.any};
+
+
+class Attendence extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +50,8 @@ class Employees extends React.Component {
             showAddModal: false,
             showUpdateModal: false,
             showAddAdvanceModal: false,
-            selectedEmployeeSalary: ''
+            selectedEmployeeSalary: '',
+            attendenceArray : []
         };
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
@@ -40,7 +71,8 @@ class Employees extends React.Component {
             showAddModal: false,
             showUpdateModal: false,
             showAddAdvanceModal: false,
-            selectedEmployeeSalary: ''
+            selectedEmployeeSalary: '',
+            attendenceArray : []
         });
     };
 
@@ -180,12 +212,17 @@ class Employees extends React.Component {
     };
 
     saveAttendence = () => {
-        let attendenceArray = [];
-        this.state.data.map((item, i) => {
+        /*this.state.data.map((item, i) => {
             // alert('present_'+item.employee.id);
             alert(document.getElementById('present_' + item.employee.id).value);
-            attendenceArray.push({"employee_id": item.employee.id, "attendence_date": new Date()});
-        });
+            let present=document.getElementById('present_' + item.employee.id).value;
+            let dayShift=document.getElementById('dayShift_' + item.employee.id).value;
+            let nightShift=document.getElementById('nightShift_' + item.employee.id).value;
+            alert(present);
+            this.state.attendenceArray.push({"employee_id": item.employee.id, "attendence_date": new Date()});
+        });*/
+        // alert(JSON.stringify(this.state.attendenceArray));
+        alert(this.state.attendenceArray[0]["present"]);
     };
     priceFormatter = (cell, row) => {
         return (<div><FaRupeeSign/>{cell}</div>);
@@ -231,18 +268,16 @@ class Employees extends React.Component {
     }
 
     attendenceFormatter = (cell, row, index) => {
+        alert(index);
+        this.state.attendenceArray.push({"employee_id": row.employee.id, "present":false,"attendence_date": new Date()});
         return (
-            <div className="custom-checkbox custom-control">
-                <input type="checkbox" id="present_38" className="custom-control-input"/><label
-                    className="custom-control-label" htmlFor="present_38"/>
-
-            </div>);
+            <CustomCheckBox id={'present_' + row.employee.id} dataArray={this.state.attendenceArray} key={'present'} index={index}/>);
     }
     attendenceDayShiftFormatter = (cell, row, index) => {
-        return (<div><CustomInput type="checkbox" id={'dayShift_' + row.employee.id}/></div>);
+        return (<CustomCheckBox id={'dayShift_' + row.employee.id} dataArray={this.state.attendenceArray} key={'dayShift'} index={index}/>);
     }
     attendenceNightFormatter = (cell, row, index) => {
-        return (<div><CustomInput type="checkbox" id={'nightShift_' + row.employee.id}/></div>);
+        return (<CustomCheckBox  id={'nightShift_' + row.employee.id} dataArray={this.state.attendenceArray} key={'nightShift'} index={index}/>);
     }
     getEmployeeById = (id) => {
         for (var i in this.state.data) {
@@ -279,4 +314,4 @@ class Employees extends React.Component {
     }
 };
 
-export default Employees;
+export default Attendence;
