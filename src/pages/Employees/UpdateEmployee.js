@@ -18,15 +18,18 @@ class UpdateEmployee extends React.Component {
                 salary: '',
                 advanceAmt: '',
                 dateOfJoining: new Date(),
+                departmentId: '',
                 roleId: ''
             },
             showUpdateModal: false,
             selectedOption: null,
             selectedRoleOption: null,
             visible: true,
+            departmentOptions: this.props.parent.getDepartmentOptions(),
             roleOptions: this.props.parent.getRoleOptions()
         };
         this.onUpdateEmployeeNameChange = this.onUpdateEmployeeNameChange.bind(this);
+        this.setDepartmentOption = this.setDepartmentOption.bind(this);
         this.fillUpdateObject = this.fillUpdateObject.bind(this);
         this.clearUpdateObject = this.clearUpdateObject.bind(this);
         this.toggle = this.toggle.bind(this);
@@ -115,6 +118,17 @@ class UpdateEmployee extends React.Component {
                             <br/>
                         </FormGroup>
                         <FormGroup>
+                            <Label>Employee Department</Label>
+                            <Select
+                                name="departmentsField"
+                                value={this.state.selectedOption}
+                                isClearable={true}
+                                isSearchable={true}
+                                options={this.state.departmentOptions}
+                                onChange={this.onUpdateEmployeeDepartmentChange}/>
+                            <br/>
+                        </FormGroup>
+                        <FormGroup>
                             <Label>Employee Date Of Joining</Label>
                             <DatePicker className="form-control" placeholderText="Select Date of joining"
                                         onChange={this.onUpdateDateOfJoining}
@@ -151,12 +165,23 @@ class UpdateEmployee extends React.Component {
             salary: selectedEmployee.salary,
             advanceAmt: selectedEmployee.advanceAmt,
             dateOfJoining: selectedEmployee.dateOfJoining,
+            departmentId: selectedEmployee.departmentId,
             roleId: selectedEmployee.roleId
         }
         //set the role option
         this.setRoleOption(selectedEmployee);
 
+        //set the department option
+        this.setDepartmentOption(selectedEmployee);
     };
+
+    setDepartmentOption(selectedEmployee) {
+        for (var i in this.state.departmentOptions) {
+            if (this.state.departmentOptions[i].value == selectedEmployee.departmentId) {
+                this.setState({selectedOption: this.state.departmentOptions[i]});
+            }
+        }
+    }
 
     setRoleOption(selectedEmployee) {
         for (var i in this.state.roleOptions) {
@@ -174,9 +199,19 @@ class UpdateEmployee extends React.Component {
         this.state.updateObject.salary = '';
         this.state.updateObject.advanceAmt = '';
         this.state.updateObject.dateOfJoining = new Date();
+        this.state.updateObject.departmentId = '';
         this.state.updateObject.roleId = '';
     };
 
+    onUpdateEmployeeDepartmentChange = (selection) => {
+        if (selection === null) {
+            this.state.updateObject.departmentId = null;
+        } else {
+            this.state.updateObject.departmentId = selection.value;
+        }
+        this.setState({selectedOption: selection});
+        this.forceUpdate();
+    };
     //Input changes
     onUpdateEmployeeNameChange = (event) => {
         this.state.updateObject.name = event.target.value;
@@ -205,7 +240,7 @@ class UpdateEmployee extends React.Component {
         this.forceUpdate();
     };
     onUpdateDateOfJoining = (date) => {
-        date= moment.utc(date.valueOf() + date.utcOffset() * 60000)
+        date = moment.utc(date.valueOf() + date.utcOffset() * 60000)
         let updateObject = this.state.updateObject;
         updateObject.dateOfJoining = date;
         this.setState({updateObject: updateObject});

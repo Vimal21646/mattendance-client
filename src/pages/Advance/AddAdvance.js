@@ -49,7 +49,7 @@ class AddDepartment extends React.Component {
         return (
             <Modal isOpen={this.props.parent.state.showAddAdvanceModal}>
                 <ModalHeader>
-                    Add Department
+                    Add Advance
                 </ModalHeader>
                 <ModalBody>
                     <form>

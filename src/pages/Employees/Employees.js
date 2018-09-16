@@ -25,6 +25,7 @@ class Employees extends React.Component {
             showAddAdvanceModal: false,
             selectedEmployeeSalary: ''
         };
+        this.departmentFormatter = this.departmentFormatter.bind(this);
         this.dateOfJoiningFormatter = this.dateOfJoiningFormatter.bind(this);
         this.getDepartmentName = this.getDepartmentName.bind(this);
         this.roleFormatter = this.roleFormatter.bind(this);
@@ -60,7 +61,7 @@ class Employees extends React.Component {
             text: 'Employee ID',
             sort: true
         }, {
-            text: 'Employee Name',
+            text: 'Name',
             sort: true,
             formatter: this.employeeNameFormatter
         }, {
@@ -76,6 +77,11 @@ class Employees extends React.Component {
         }, {
             text: 'Net Salary',
             formatter: this.curentSalaryFormatter,
+            sort: true
+        }, {
+            dataField: 'departmentId',
+            text: 'Department',
+            formatter: this.departmentFormatter,
             sort: true
         }, {
             dataField: 'dateOfJoining',
@@ -243,7 +249,7 @@ class Employees extends React.Component {
         return this.getDepartmentName(row.departmentId);
     }
 
-    dateOfJoiningFormatter=(cell, row)=>{
+    dateOfJoiningFormatter = (cell, row) => {
         return <Timestamp time={new Date(row.dateOfJoining)} utc={true} format='date'/>;
     }
 

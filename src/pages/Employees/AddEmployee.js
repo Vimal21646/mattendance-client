@@ -16,8 +16,10 @@ class AddEmployee extends React.Component {
                 salary: '',
                 advanceAmt: '',
                 dateOfJoining: '',
+                departmentId: '',
                 roleId: ''
             },
+            selectedDepartmentOption: null,
             selectedRoleOption: null
         };
 
@@ -41,6 +43,7 @@ class AddEmployee extends React.Component {
                 salary: '',
                 advanceAmt: '',
                 dateOfJoining: '',
+                departmentId: '',
                 roleId: ''
             }
         }
@@ -84,6 +87,15 @@ class AddEmployee extends React.Component {
                                 placeholder="Enter Advance"
                                 value={this.state.addObject.advanceAmt}
                                 onChange={this.onAddEmployeeAdvanceChange}/>
+                            <br/>
+                            <Label>Employee Department</Label>
+                            <Select
+                                name="departmentsField"
+                                isClearable={true}
+                                isSearchable={true}
+                                value={this.state.selectedDepartmentOption}
+                                options={this.props.parent.getDepartmentOptions()}
+                                onChange={this.onAddEmployeeDepartmentChange}/>
                             <br/>
 
                             <Label>Employee Joining Date</Label>

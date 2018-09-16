@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import {CustomInput} from 'reactstrap';
-import {FaPlus, FaTrash, FaSync, FaSyncAlt, FaRupeeSign} from 'react-icons/fa';
+import {CustomInput, ButtonGroup, Button} from 'reactstrap';
+import {FaPlus, FaTrash, FaDownload, FaRupeeSign} from 'react-icons/fa';
 import ReactLoading from 'react-loading';
 import BootstrapTable from 'react-bootstrap-table-next';
 
@@ -22,15 +22,13 @@ class Employees extends React.Component {
             showAddAdvanceModal: false,
             selectedEmployeeSalary: ''
         };
-        this.dateOfJoiningFormatter = this.dateOfJoiningFormatter.bind(this);
-        this.getDepartmentName = this.getDepartmentName.bind(this);
-        this.roleFormatter = this.roleFormatter.bind(this);
-        this.getRoleName = this.getRoleName.bind(this);
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
-        this.curentSalaryFormatter = this.curentSalaryFormatter.bind(this);
         this.employeeNameFormatter = this.employeeNameFormatter.bind(this);
         this.attendenceFormatter = this.attendenceFormatter.bind(this);
+        this.attendenceDayShiftFormatter = this.attendenceDayShiftFormatter.bind(this);
+        this.attendenceNightFormatter = this.attendenceNightFormatter.bind(this);
+        this.saveAttendence = this.saveAttendence.bind(this);
     };
 
     getInitialState = () => {
@@ -54,14 +52,19 @@ class Employees extends React.Component {
         const {SearchBar} = Search;
         const columns = [
             {
-                dataField: 'id',
+                dataField: 'employee.id',
                 text: 'Employee ID',
                 sort: true
             }, {
-                text: 'Employee Name',
+                text: 'Name',
                 dataField: "name",
                 sort: true,
                 formatter: this.employeeNameFormatter
+            },
+            {
+                text: 'Unit',
+                dataField: "employee.department.name",
+                sort: true
             },
             {
                 dataField: 'totalDayShift',
@@ -83,12 +86,12 @@ class Employees extends React.Component {
                 dataField: 'dShift',
                 isDummyField: true,
                 text: "Day Shift",
-                formatter: this.attendenceFormatter
+                formatter: this.attendenceDayShiftFormatter
             }, {
                 dataField: 'nShift',
                 isDummyField: true,
                 text: "Night Shift",
-                formatter: this.attendenceFormatter
+                formatter: this.attendenceNightFormatter
             }
         ];
         const selectRowProp = {
@@ -118,6 +121,12 @@ class Employees extends React.Component {
 
         return (
             <div>
+                <ButtonGroup className="m-10">
+                    <Button color="success" onClick={this.saveAttendence}><FaPlus/> Save All</Button>
+                    <Button color="primary" className="text-white"
+                            disabled={this.state.selectedEmployeeId === null}><FaDownload/> Export as Excel</Button>
+
+                </ButtonGroup>
                 <ToolkitProvider
                     keyField="id"
                     data={this.state.data}
@@ -143,7 +152,7 @@ class Employees extends React.Component {
     };
 
     employeeNameFormatter = (cell, row) => {
-        return row.name + ' ' + row.surname;
+        return row.employee.name + ' ' + row.employee.surname;
     }
     // Department list for Select component
     getDepartmentOptions = () => {
@@ -170,7 +179,14 @@ class Employees extends React.Component {
         return options;
     };
 
-
+    saveAttendence = () => {
+        let attendenceArray = [];
+        this.state.data.map((item, i) => {
+            // alert('present_'+item.employee.id);
+            alert(document.getElementById('present_' + item.employee.id).value);
+            attendenceArray.push({"employee_id": item.employee.id, "attendence_date": new Date()});
+        });
+    };
     priceFormatter = (cell, row) => {
         return (<div><FaRupeeSign/>{cell}</div>);
     }
@@ -215,7 +231,18 @@ class Employees extends React.Component {
     }
 
     attendenceFormatter = (cell, row, index) => {
-        return (<div><CustomInput type="checkbox" id={row.id}/></div>);
+        return (
+            <div className="custom-checkbox custom-control">
+                <input type="checkbox" id="present_38" className="custom-control-input"/><label
+                    className="custom-control-label" htmlFor="present_38"/>
+
+            </div>);
+    }
+    attendenceDayShiftFormatter = (cell, row, index) => {
+        return (<div><CustomInput type="checkbox" id={'dayShift_' + row.employee.id}/></div>);
+    }
+    attendenceNightFormatter = (cell, row, index) => {
+        return (<div><CustomInput type="checkbox" id={'nightShift_' + row.employee.id}/></div>);
     }
     getEmployeeById = (id) => {
         for (var i in this.state.data) {
@@ -227,7 +254,7 @@ class Employees extends React.Component {
     }
 
     getEmployees = () => {
-        return axios.get('http://mattendenceserver.herokuapp.com/employees');
+        return axios.get('http://mattendenceserver.herokuapp.com/attendences');
     }
 
     getDepartments = () => {
