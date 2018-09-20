@@ -1140,11 +1140,11 @@ var Select = _react2['default'].createClass({
 				this.focusPageDownOption();
 				break;
 			case 35:
-				// end key
+				// end keyData
 				this.focusEndOption();
 				break;
 			case 36:
-				// home key
+				// home keyData
 				this.focusStartOption();
 				break;
 			default:
@@ -1441,7 +1441,7 @@ var Select = _react2['default'].createClass({
 						id: _this4._instancePrefix + '-value-' + i,
 						instancePrefix: _this4._instancePrefix,
 						disabled: _this4.props.disabled || value.clearableValue === false,
-						key: 'value-' + i + '-' + value[_this4.props.valueKey],
+						keyData: 'value-' + i + '-' + value[_this4.props.valueKey],
 						onClick: onClick,
 						onRemove: _this4.removeValue,
 						value: value
@@ -1633,7 +1633,7 @@ var Select = _react2['default'].createClass({
 				disabled: this.props.disabled });
 		}
 		return valueArray.map(function (item, index) {
-			return _react2['default'].createElement('input', { key: 'hidden.' + index,
+			return _react2['default'].createElement('input', { keyData: 'hidden.' + index,
 				type: 'hidden',
 				ref: 'value' + index,
 				name: _this6.props.name,

@@ -6,36 +6,36 @@ import ReactLoading from 'react-loading';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
-import Timestamp from "react-timestamp";
 import * as PropTypes from "prop-types";
 
 class CustomCheckBox extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isChecked:false
+            isChecked: false,
+            index: props.index,
+            dataArray: props.dataArray,
+            keyData: props.keyData
         };
-        // dataArray.push({"employee_id": this.props.dataValue, "attendence_date": new Date()});
     };
 
     render() {
         return (<div className="custom-checkbox custom-control" align="center">
-            <input type="checkbox" id={this.props.id} className="custom-control-input" value={this.state.isChecked}/><label
+            <input type="checkbox" id={this.props.id} className="custom-control-input"
+                   value={this.state.isChecked}/><label
             className="custom-control-label" htmlFor={this.props.id} onClick={this.handleCheckBoxClick}/>
         </div>);
     }
 
-    handleCheckBoxClick=()=>{
+    handleCheckBoxClick = () => {
         this.setState({
-            isChecked:!this.state.isChecked
+            isChecked: !this.state.isChecked
         });
-
-        this.props.dataArray[this.props.index][this.props.key]=!this.state.isChecked;
-        alert(this.props.dataArray[this.props.index][this.props.key]);
+        this.state.dataArray[this.state.index][this.state.keyData] = !this.state.isChecked;
     }
 }
 
-CustomCheckBox.propTypes = {id: PropTypes.any,dataArray:[],index:PropTypes.any,key:PropTypes.any};
+CustomCheckBox.propTypes = {id: PropTypes.any, dataArray: [], index: PropTypes.any, keyData: PropTypes.string};
 
 
 class Attendence extends React.Component {
@@ -51,7 +51,7 @@ class Attendence extends React.Component {
             showUpdateModal: false,
             showAddAdvanceModal: false,
             selectedEmployeeSalary: '',
-            attendenceArray : []
+            attendenceArray: []
         };
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
@@ -60,6 +60,7 @@ class Attendence extends React.Component {
         this.attendenceDayShiftFormatter = this.attendenceDayShiftFormatter.bind(this);
         this.attendenceNightFormatter = this.attendenceNightFormatter.bind(this);
         this.saveAttendence = this.saveAttendence.bind(this);
+        this.rowFormatter = this.rowFormatter.bind(this);
     };
 
     getInitialState = () => {
@@ -72,7 +73,7 @@ class Attendence extends React.Component {
             showUpdateModal: false,
             showAddAdvanceModal: false,
             selectedEmployeeSalary: '',
-            attendenceArray : []
+            attendenceArray: []
         });
     };
 
@@ -86,7 +87,8 @@ class Attendence extends React.Component {
             {
                 dataField: 'employee.id',
                 text: 'Employee ID',
-                sort: true
+                sort: true,
+                formatter: this.rowFormatter
             }, {
                 text: 'Name',
                 dataField: "name",
@@ -183,34 +185,18 @@ class Attendence extends React.Component {
         );
     };
 
+    rowFormatter = (cell, row) => {
+        this.state.attendenceArray.push({
+            "employee_id": row.employee.id,
+            "present": false,
+            "dayShift": false,
+            "nightShift": false,
+            "attendence_date": new Date()
+        });
+    }
     employeeNameFormatter = (cell, row) => {
         return row.employee.name + ' ' + row.employee.surname;
     }
-    // Department list for Select component
-    getDepartmentOptions = () => {
-        var options = [];
-        options = this.state.departments.map(function (obj) {
-            var rObj = {};
-            rObj['value'] = obj['id'];
-            rObj['label'] = obj['name'];
-            return rObj;
-        });
-
-        return options;
-    };
-
-    getRoleOptions = () => {
-        var options = [];
-        options = this.state.roles.map(function (obj) {
-            var rObj = {};
-            rObj['value'] = obj['id'];
-            rObj['label'] = obj['name'];
-            return rObj;
-        });
-
-        return options;
-    };
-
     saveAttendence = () => {
         /*this.state.data.map((item, i) => {
             // alert('present_'+item.employee.id);
@@ -222,7 +208,7 @@ class Attendence extends React.Component {
             this.state.attendenceArray.push({"employee_id": item.employee.id, "attendence_date": new Date()});
         });*/
         // alert(JSON.stringify(this.state.attendenceArray));
-        alert(this.state.attendenceArray[0]["present"]);
+        // alert(JSON.stringify(this.state.attendenceArray));
     };
     priceFormatter = (cell, row) => {
         return (<div><FaRupeeSign/>{cell}</div>);
@@ -232,83 +218,32 @@ class Attendence extends React.Component {
         return (<div><FaRupeeSign/>{cell}</div>);
     }
 
-    curentSalaryFormatter = (cell, row) => {
-
-        return (<div><FaRupeeSign/>{Number(row.salary) - Number(row.advanceAmt)}</div>);
-    }
-
-    departmentFormatter = (cell, row) => {
-        return this.getDepartmentName(row.departmentId);
-    }
-
-    dateOfJoiningFormatter = (cell, row) => {
-        return <Timestamp time={new Date(row.dateOfJoining)} utc={true} format='date'/>;
-    }
-
-    getDepartmentName = (departmentId) => {
-        for (var i in this.state.departments) {
-            if (this.state.departments[i].id === departmentId) {
-                return this.state.departments[i].name;
-            }
-        }
-        return '';
-    }
-
-    roleFormatter = (cell, row) => {
-        return this.getRoleName(row.roleId);
-    }
-
-    getRoleName = (roleId) => {
-        for (var i in this.state.roles) {
-            if (this.state.roles[i].id === roleId) {
-                return this.state.roles[i].name;
-            }
-        }
-        return '';
-    }
-
     attendenceFormatter = (cell, row, index) => {
-        alert(index);
-        this.state.attendenceArray.push({"employee_id": row.employee.id, "present":false,"attendence_date": new Date()});
         return (
-            <CustomCheckBox id={'present_' + row.employee.id} dataArray={this.state.attendenceArray} key={'present'} index={index}/>);
+            <CustomCheckBox id={'present_' + row.employee.id} dataArray={this.state.attendenceArray} index={index}
+                            keyData={'present'}
+            />);
     }
     attendenceDayShiftFormatter = (cell, row, index) => {
-        return (<CustomCheckBox id={'dayShift_' + row.employee.id} dataArray={this.state.attendenceArray} key={'dayShift'} index={index}/>);
+        return (
+            <CustomCheckBox id={'dayShift_' + row.employee.id} dataArray={this.state.attendenceArray}
+                            keyData={'dayShift'}
+                            index={index}/>);
     }
     attendenceNightFormatter = (cell, row, index) => {
-        return (<CustomCheckBox  id={'nightShift_' + row.employee.id} dataArray={this.state.attendenceArray} key={'nightShift'} index={index}/>);
+        return (<CustomCheckBox id={'nightShift_' + row.employee.id} dataArray={this.state.attendenceArray}
+                                keyData={'nightShift'} index={index}/>);
     }
-    getEmployeeById = (id) => {
-        for (var i in this.state.data) {
-            if (this.state.data[i].id === id) {
-                return this.state.data[i];
-            }
-        }
-        return '';
-    }
-
     getEmployees = () => {
         return axios.get('http://mattendenceserver.herokuapp.com/attendences');
     }
 
-    getDepartments = () => {
-        return axios.get('http://mattendenceserver.herokuapp.com/departments');
-    }
-
-    getRoles = () => {
-        return axios.get('http://mattendenceserver.herokuapp.com/roles');
-    }
-
-
     //Get table data and update the state to render
     refreshTable = () => {
-        axios.all([this.getEmployees(), this.getDepartments(), this.getRoles()])
-            .then(axios.spread(function (employees, departments, roles) {
+        axios.all([this.getEmployees()])
+            .then(axios.spread(function (employees) {
                 this.setState({
                     data: employees.data,
-                    departments: departments.data,
-                    roles: roles.data
                 });
             }.bind(this)));
     }
