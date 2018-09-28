@@ -9,6 +9,7 @@
     "react": "^16.4.2",
     "react-bootstrap-table-next": "^1.1.0",
     "react-bootstrap-table2-toolkit": "^1.0.1",
+    "react-bs-notifier": "^5.0.0",
     "react-datepicker": "^1.6.0",
     "react-dom": "^16.4.2",
     "react-icons": "^3.0.4",

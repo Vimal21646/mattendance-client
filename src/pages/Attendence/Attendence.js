@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {CustomInput, ButtonGroup, Button} from 'reactstrap';
+import { AlertList } from "react-bs-notifier";
 import {FaPlus, FaTrash, FaDownload, FaRupeeSign} from 'react-icons/fa';
 import ReactLoading from 'react-loading';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -35,7 +36,7 @@ class CustomCheckBox extends Component {
     }
 }
 
-CustomCheckBox.propTypes = {id: PropTypes.any, dataArray: [], index: PropTypes.any, keyData: PropTypes.string};
+CustomCheckBox.propTypes = {id: PropTypes.any, dataArray: PropTypes.any, index: PropTypes.any, keyData: PropTypes.string};
 
 
 class Attendence extends React.Component {
@@ -51,16 +52,21 @@ class Attendence extends React.Component {
             showUpdateModal: false,
             showAddAdvanceModal: false,
             selectedEmployeeSalary: '',
-            attendenceArray: []
+            attendanceArray: [],
+            alerts: [],
+            position: "top-right",
+            timeout: 0
         };
         this.updateEmployee = React.createRef();
         this.child = React.createRef();
         this.employeeNameFormatter = this.employeeNameFormatter.bind(this);
-        this.attendenceFormatter = this.attendenceFormatter.bind(this);
-        this.attendenceDayShiftFormatter = this.attendenceDayShiftFormatter.bind(this);
-        this.attendenceNightFormatter = this.attendenceNightFormatter.bind(this);
-        this.saveAttendence = this.saveAttendence.bind(this);
+        this.attendanceFormatter = this.attendanceFormatter.bind(this);
+        this.attendanceDayShiftFormatter = this.attendanceDayShiftFormatter.bind(this);
+        this.attendanceNightFormatter = this.attendanceNightFormatter.bind(this);
+        this.saveAttendance = this.saveAttendance.bind(this);
         this.rowFormatter = this.rowFormatter.bind(this);
+        this.onAlertDismissed=this.onAlertDismissed.bind(this);
+        this.generate=this.generate.bind(this);
     };
 
     getInitialState = () => {
@@ -73,7 +79,7 @@ class Attendence extends React.Component {
             showUpdateModal: false,
             showAddAdvanceModal: false,
             selectedEmployeeSalary: '',
-            attendenceArray: []
+            attendanceArray: []
         });
     };
 
@@ -114,18 +120,18 @@ class Attendence extends React.Component {
                 dataField: 'present',
                 isDummyField: true,
                 text: "Present Today",
-                formatter: this.attendenceFormatter
+                formatter: this.attendanceFormatter
             },
             {
                 dataField: 'dShift',
                 isDummyField: true,
                 text: "Day Shift",
-                formatter: this.attendenceDayShiftFormatter
+                formatter: this.attendanceDayShiftFormatter
             }, {
                 dataField: 'nShift',
                 isDummyField: true,
                 text: "Night Shift",
-                formatter: this.attendenceNightFormatter
+                formatter: this.attendanceNightFormatter
             }
         ];
         const selectRowProp = {
@@ -155,14 +161,21 @@ class Attendence extends React.Component {
 
         return (
             <div>
+                <AlertList
+                    position={this.state.position}
+                    alerts={this.state.alerts}
+                    timeout={this.state.timeout}
+                    dismissTitle="Done...!"
+                    onDismiss={this.onAlertDismissed.bind(this)}/>
+
                 <ButtonGroup className="m-10">
-                    <Button color="success" onClick={this.saveAttendence}><FaPlus/> Save All</Button>
+                    <Button color="success" onClick={this.saveAttendance}><FaPlus/> Save All</Button>
                     <Button color="primary" className="text-white"
                             disabled={this.state.selectedEmployeeId === null}><FaDownload/> Export as Excel</Button>
 
                 </ButtonGroup>
                 <ToolkitProvider
-                    keyField="id"
+                    keyField="attendanceId"
                     data={this.state.data}
                     columns={columns}
                     search>
@@ -186,57 +199,78 @@ class Attendence extends React.Component {
     };
 
     rowFormatter = (cell, row) => {
-        this.state.attendenceArray.push({
-            "employee_id": row.employee.id,
+        this.state.attendanceArray.push({
+            "employeeId": row.employee.id,
             "present": false,
             "dayShift": false,
             "nightShift": false,
-            "attendence_date": new Date()
+            "attendenceDate": new Date()
         });
-    }
+        return row.employee.id;
+    };
     employeeNameFormatter = (cell, row) => {
         return row.employee.name + ' ' + row.employee.surname;
-    }
-    saveAttendence = () => {
-        /*this.state.data.map((item, i) => {
-            // alert('present_'+item.employee.id);
-            alert(document.getElementById('present_' + item.employee.id).value);
-            let present=document.getElementById('present_' + item.employee.id).value;
-            let dayShift=document.getElementById('dayShift_' + item.employee.id).value;
-            let nightShift=document.getElementById('nightShift_' + item.employee.id).value;
-            alert(present);
-            this.state.attendenceArray.push({"employee_id": item.employee.id, "attendence_date": new Date()});
-        });*/
-        // alert(JSON.stringify(this.state.attendenceArray));
-        // alert(JSON.stringify(this.state.attendenceArray));
     };
-    priceFormatter = (cell, row) => {
-        return (<div><FaRupeeSign/>{cell}</div>);
+
+    onAlertDismissed(alert) {
+        const alerts = this.state.alerts;
+
+        // find the index of the alert that was dismissed
+        const idx = alerts.indexOf(alert);
+
+        if (idx >= 0) {
+            this.setState({
+                // remove the alert from the array
+                alerts: [...alerts.slice(0, idx), ...alerts.slice(idx + 1)]
+            });
+        }
     }
 
-    advanceAmtFormatter = (cell, row) => {
-        return (<div><FaRupeeSign/>{cell}</div>);
+    generate(type,newMessage) {
+        alert("--Gi--");
+        const newAlert ={
+            id: (new Date()).getTime(),
+            type: type,
+            headline: `${type}!`,
+            message: newMessage
+        };
+
+        this.setState({
+            alerts: [...this.state.alerts, newAlert]
+        });
     }
 
-    attendenceFormatter = (cell, row, index) => {
+    saveAttendance = () => {
+        axios.post('https://mattendenceserver.herokuapp.com/attendences', this.state.attendanceArray)
+            .then(function (response) {
+                this.refreshTable();
+                console.log(response);
+                alert("--ghghgh--");
+                this.generate("success","Attendance saved successfuly!");
+            }.bind(this))
+            .catch(function (error) {
+                console.log(error);
+            });
+    };
+
+    attendanceFormatter = (cell, row, index) => {
         return (
-            <CustomCheckBox id={'present_' + row.employee.id} dataArray={this.state.attendenceArray} index={index}
-                            keyData={'present'}
-            />);
-    }
-    attendenceDayShiftFormatter = (cell, row, index) => {
+            <CustomCheckBox id={'present_' + row.employee.id} dataArray={this.state.attendanceArray} index={index}
+                            keyData={'present'}/>);
+    };
+    attendanceDayShiftFormatter = (cell, row, index) => {
         return (
-            <CustomCheckBox id={'dayShift_' + row.employee.id} dataArray={this.state.attendenceArray}
+            <CustomCheckBox id={'dayShift_' + row.employee.id} dataArray={this.state.attendanceArray}
                             keyData={'dayShift'}
                             index={index}/>);
-    }
-    attendenceNightFormatter = (cell, row, index) => {
-        return (<CustomCheckBox id={'nightShift_' + row.employee.id} dataArray={this.state.attendenceArray}
+    };
+    attendanceNightFormatter = (cell, row, index) => {
+        return (<CustomCheckBox id={'nightShift_' + row.employee.id} dataArray={this.state.attendanceArray}
                                 keyData={'nightShift'} index={index}/>);
-    }
+    };
     getEmployees = () => {
         return axios.get('http://mattendenceserver.herokuapp.com/attendences');
-    }
+    };
 
     //Get table data and update the state to render
     refreshTable = () => {
@@ -246,7 +280,7 @@ class Attendence extends React.Component {
                     data: employees.data,
                 });
             }.bind(this)));
-    }
+    };
 };
 
 export default Attendence;

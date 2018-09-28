@@ -66,7 +66,7 @@ class Employees extends React.Component {
             formatter: this.employeeNameFormatter
         }, {
             dataField: 'salary',
-            text: 'Salary',
+            text: 'Monthly Salary',
             formatter: this.priceFormatter,
             sort: true
         }, {
@@ -196,6 +196,7 @@ class Employees extends React.Component {
     closeAddAdvanceModal = () => {
         this.setState({showAddAdvanceModal: false});
         this.refs.addAdvance.clearAddObject();
+        this.refreshTable();
     };
     openAddModal = () => {
         this.refs.addEmployee.clearAddObject();
@@ -242,7 +243,7 @@ class Employees extends React.Component {
 
     curentSalaryFormatter = (cell, row) => {
 
-        return (<div><FaRupeeSign/>{Number(row.salary) - Number(row.advanceAmt)}</div>);
+        return (<div><FaRupeeSign/>{Number(row.netSalary) - Number(row.advanceAmt)}</div>);
     }
 
     departmentFormatter = (cell, row) => {

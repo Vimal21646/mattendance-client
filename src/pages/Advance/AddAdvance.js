@@ -22,7 +22,7 @@ class AddDepartment extends React.Component {
         super(props);
         this.state = {
             addObject: {
-                employeeId: '',
+                employeeId: 0,
                 advanceAmt: '',
                 advanceDate: new Date()
             },
@@ -37,7 +37,7 @@ class AddDepartment extends React.Component {
     getInitialState = () => {
         return {
             addObject: {
-                employeeId: '',
+                employeeId: 0,
                 advanceAmt: '',
                 advanceDate: new Date(),
                 isAdvanceAmtInvalid:false
@@ -86,7 +86,7 @@ class AddDepartment extends React.Component {
     }
 
     clearAddObject = () => {
-        this.state.addObject.employeeId = '';
+        this.state.addObject.employeeId = 0;
         this.state.addObject.advanceAmt = '';
         this.state.addObject.advanceDate = '';
     }
@@ -111,7 +111,8 @@ class AddDepartment extends React.Component {
     }
     onAddBtnClicked = () => {
         //Save advances
-        axios.post('https://mattendenceserver.herokuapp.com/advances', this.state.addObject)
+        console.log(JSON.stringify(this.state.addObject));
+        axios.post('https://mattendenceserver.herokuapp.com/advances/', this.state.addObject)
             .then(function (response) {
                 this.props.parent.closeAddAdvanceModal();
                 this.props.parent.refreshTable();
@@ -120,6 +121,7 @@ class AddDepartment extends React.Component {
             .catch(function (error) {
                 console.log(error);
             });
+        this.props.parent.closeAddAdvanceModal();
     }
 }
 
