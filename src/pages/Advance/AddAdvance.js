@@ -25,6 +25,7 @@ class AddDepartment extends React.Component {
             addAdvanceObject: {
                 employeeId: 0,
                 advanceAmt: '',
+                voucherNumber: '',
                 advanceDate: moment(new Date())
             },
             isAdvanceAmtInvalid: false
@@ -32,7 +33,7 @@ class AddDepartment extends React.Component {
         this.onAddAdvanceAmtChange = this.onAddAdvanceAmtChange.bind(this);
         this.handleAdvanceAmtDate = this.handleAdvanceAmtDate.bind(this);
         this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
-
+        this.onVoucherNumberChange = this.onVoucherNumberChange.bind(this);
     }
 
     getInitialState = () => {
@@ -40,6 +41,7 @@ class AddDepartment extends React.Component {
             addAdvanceObject: {
                 employeeId: 0,
                 advanceAmt: '',
+                voucherNumber: '',
                 advanceDate: moment(new Date()),
                 isAdvanceAmtInvalid: false
             }
@@ -58,6 +60,17 @@ class AddDepartment extends React.Component {
                             <Label>Salary</Label><br/>
                             <Input plaintext><FaRupeeSign/>{this.props.parent.state.selectedEmployeeSalary}</Input>
                         </FormGroup>
+
+                        <FormGroup>
+                            <Label>Voucher Number</Label>
+                            <Input
+                                type="text"
+                                placeholder="Enter voucher number"
+                                value={this.state.addAdvanceObject.voucherNumber}
+                                onChange={this.onVoucherNumberChange}/>
+                            <FormFeedback tooltip>Advance amount is greater than salary</FormFeedback>
+                        </FormGroup>
+                        <br/>
                         <FormGroup>
                             <Label>Advance Amount</Label>
                             <Input
@@ -104,6 +117,12 @@ class AddDepartment extends React.Component {
         this.forceUpdate();
     }
 
+    onVoucherNumberChange = (event) => {
+        let addAdvanceObject = this.state.addAdvanceObject;
+        addAdvanceObject.voucherNumber = event.target.value;
+        this.setState({addAdvanceObject: addAdvanceObject});
+        this.forceUpdate();
+    }
     handleAdvanceAmtDate = (date) => {
         let addAdvanceObject = this.state.addAdvanceObject;
         addAdvanceObject.advanceDate = date;
@@ -117,7 +136,7 @@ class AddDepartment extends React.Component {
             console.log('Starting Request', request)
             return request
         })
-        var addAdvanceObject=this.state.addAdvanceObject;
+        var addAdvanceObject = this.state.addAdvanceObject;
         axios.post('https://mattendenceserver.herokuapp.com/advances', JSON.parse(JSON.stringify(this.state.addAdvanceObject)))
             .then(function (response) {
                 this.props.parent.closeAddAdvanceModal();

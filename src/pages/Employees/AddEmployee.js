@@ -3,6 +3,7 @@ import Select from 'react-select';
 import axios from 'axios';
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input} from 'reactstrap';
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class AddEmployee extends React.Component {
@@ -101,7 +102,7 @@ class AddEmployee extends React.Component {
                             <Label>Employee Joining Date</Label>
                             <DatePicker className="form-control" placeholderText="Select Date of Joining"
                                         onChange={this.handleDateOfJoining}
-                                        selected={this.state.addObject.dateOfJoining}
+                                        selected={moment(this.state.addObject.dateOfJoining)}
                                         dateFormat="DD/MM/YYYY"/>
                             <br/>
                             <Label>Employee Role</Label>

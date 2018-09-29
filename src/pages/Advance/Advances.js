@@ -14,16 +14,17 @@ class Advances extends React.Component {
         super(props);
         this.state = {
             data: null,
-            selectedEmployeeSalary:'',
+            selectedEmployeeSalary: '',
             selectedAdvanceId: null,
             showAddModal: false,
             showUpdateModal: false,
-            selectedAdvanceAmt:'',
-            selectedAdvanceDate:null
+            selectedAdvanceAmt: '',
+            selectedAdvanceDate: null,
+            selectedEmployeeId:''
         };
         this.child = React.createRef();
-        this.employeeNameFormatter=this.employeeNameFormatter.bind(this);
-        this.advanceTimestampFormatter=this.advanceTimestampFormatter.bind(this);
+        this.employeeNameFormatter = this.employeeNameFormatter.bind(this);
+        this.advanceTimestampFormatter = this.advanceTimestampFormatter.bind(this);
     }
 
     getInitialState = () => {
@@ -32,8 +33,9 @@ class Advances extends React.Component {
             selectedAdvanceId: null,
             showAddModal: false,
             showUpdateModal: false,
-            selectedAdvanceAmt:'',
-            selectedAdvanceDate:null
+            selectedAdvanceAmt: '',
+            selectedAdvanceDate: null,
+            selectedEmployeeId:''
         });
 
     }
@@ -49,15 +51,20 @@ class Advances extends React.Component {
             text: 'Employee ID',
             sort: true
         }, {
+            dataField: 'employee.name',
             text: 'Employee Name',
             sort: true,
-            formatter:this.employeeNameFormatter
+            formatter: this.employeeNameFormatter
+        }, {
+            dataField: 'voucherNumber',
+            text: 'Voucher Number',
+            sort: true
         }, {
             dataField: 'advanceAmt',
             text: 'Advance Amount',
             sort: true
         }, {
-            dataField:"advanceDate",
+            dataField: "advanceDate",
             text: 'Date',
             sort: true
             // ,
@@ -72,16 +79,18 @@ class Advances extends React.Component {
                 if (isSelect) {
                     this.setState(() => ({
                         selectedAdvanceId: row.id,
-                        selectedEmployeeSalary:row.employee.salary,
-                        selectedAdvanceAmt:row.advanceAmt,
-                        selectedAdvanceDate:row.advanceDate
+                        selectedEmployeeSalary: row.employee.salary,
+                        selectedAdvanceAmt: row.advanceAmt,
+                        selectedAdvanceDate: row.advanceDate,
+                        selectedEmployeeId:row.employee.id
                     }));
                 } else {
                     this.setState(() => ({
                         selectedAdvanceId: null,
-                        selectedEmployeeSalary:null,
-                        selectedAdvanceAmt:null,
-                        selectedAdvanceDate:null
+                        selectedEmployeeSalary: null,
+                        selectedAdvanceAmt: null,
+                        selectedAdvanceDate: null,
+                        selectedEmployeeId:null
                     }));
                 }
             }
@@ -138,8 +147,8 @@ class Advances extends React.Component {
             this.setState({selectedAdvanceId: null});
         }
     }
-    employeeNameFormatter=(cell, row)=>{
-        return row.employee.name+' '+row.employee.surname;
+    employeeNameFormatter = (cell, row) => {
+        return row.employee.name + ' ' + row.employee.surname;
     }
     //Add modal open/close
     closeAddModal = () => {
@@ -186,7 +195,7 @@ class Advances extends React.Component {
         return '';
     }
 
-    advanceTimestampFormatter=(cell, row)=>{
+    advanceTimestampFormatter = (cell, row) => {
         return <Timestamp time={row.advanceDate} utc={true} format='date'/>;
     }
 

@@ -16,6 +16,7 @@ class UpdateDepartment extends React.Component {
                 id: '',
                 employeeId: '',
                 advanceAmt: '',
+                voucherNumber:'',
                 advanceDate: new Date()
             },
             selectedAdvanceId:'',
@@ -24,6 +25,7 @@ class UpdateDepartment extends React.Component {
         };
         this.onUpdateAdvanceAmtChange=this.onUpdateAdvanceAmtChange.bind(this);
         this.handleAdvanceAmtDate=this.handleAdvanceAmtDate.bind(this);
+        this.onVoucherNumberChange = this.onVoucherNumberChange.bind(this);
     }
 
     getInitialState = () => {
@@ -32,6 +34,7 @@ class UpdateDepartment extends React.Component {
                 id: '',
                 employeeId: '',
                 advanceAmt: '',
+                voucherNumber:'',
                 advanceDate: new Date()
             }
         }
@@ -50,6 +53,16 @@ class UpdateDepartment extends React.Component {
                             <Label>Salary</Label><br/>
                             <Input plaintext><FaRupeeSign/>{this.props.parent.state.selectedEmployeeSalary}</Input>
                         </FormGroup>
+
+                        <FormGroup>
+                            <Label>Voucher Number</Label>
+                            <Input
+                                type="text"
+                                placeholder="Enter voucher number"
+                                value={this.state.updateObject.voucherNumber}
+                                onChange={this.onVoucherNumberChange}/>
+                        </FormGroup>
+                        <br/>
                         <FormGroup>
                             <Label>Advance Amount</Label>
                             <Input
@@ -83,7 +96,10 @@ class UpdateDepartment extends React.Component {
         this.state.updateObject = {
             id: this.props.parent.state.selectedAdvanceId,
             advanceAmt: this.props.parent.state.selectedAdvanceAmt,
-            advanceDate: this.props.parent.state.selectedAdvanceDate
+            advanceDate: this.props.parent.state.selectedAdvanceDate,
+            employeeId:this.props.parent.state.selectedEmployeeId,
+            voucherNumber:''
+
         };
     }
     clearUpdateObject = () => {
@@ -104,6 +120,13 @@ class UpdateDepartment extends React.Component {
         this.forceUpdate();
     }
 
+    onVoucherNumberChange = (event) => {
+        let updateObject = this.state.updateObject;
+        updateObject.voucherNumber = event.target.value.toString();
+        this.setState({updateObject: updateObject});
+        this.forceUpdate();
+    }
+
     handleAdvanceAmtDate = (date) => {
         date= moment.utc(date.valueOf() + date.utcOffset() * 60000)
         let updateObject = this.state.updateObject;
@@ -112,6 +135,10 @@ class UpdateDepartment extends React.Component {
     }
     onUpdateBtnClicked = () => {
 
+        let updateObject = this.state.updateObject;
+        updateObject.employeeId=this.props.parent.state.selectedEmployeeId;
+        this.setState({updateObject: updateObject});
+        console.log(JSON.stringify(this.state.updateObject));
         //Update Department
         axios.put('https://mattendenceserver.herokuapp.com/advances/' + this.state.updateObject.id, this.state.updateObject)
             .then(function (response) {
