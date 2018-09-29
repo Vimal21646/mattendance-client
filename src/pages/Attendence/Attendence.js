@@ -175,7 +175,7 @@ class Attendence extends React.Component {
 
                 </ButtonGroup>
                 <ToolkitProvider
-                    keyField="attendanceId"
+                    keyField="employee.id"
                     data={this.state.data}
                     columns={columns}
                     search>
@@ -227,7 +227,6 @@ class Attendence extends React.Component {
     }
 
     generate(type,newMessage) {
-        alert("--Gi--");
         const newAlert ={
             id: (new Date()).getTime(),
             type: type,
@@ -245,7 +244,6 @@ class Attendence extends React.Component {
             .then(function (response) {
                 this.refreshTable();
                 console.log(response);
-                alert("--ghghgh--");
                 this.generate("success","Attendance saved successfuly!");
             }.bind(this))
             .catch(function (error) {
