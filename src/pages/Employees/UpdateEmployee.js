@@ -259,6 +259,7 @@ class UpdateEmployee extends React.Component {
 
     onUpdateBtnClicked = () => {
         //Update employee
+        console.log(JSON.stringify(this.state.updateObject))
         axios.put('http://mattendenceserver.herokuapp.com/employees/' + this.state.updateObject.id, this.state.updateObject)
             .then(function (response) {
                 this.props.parent.closeUpdateModal();

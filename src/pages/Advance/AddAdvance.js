@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import {
     Button,
     Modal,
@@ -21,12 +22,12 @@ class AddDepartment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            addObject: {
+            addAdvanceObject: {
                 employeeId: 0,
                 advanceAmt: '',
-                advanceDate: new Date()
+                advanceDate: moment(new Date())
             },
-            isAdvanceAmtInvalid:false
+            isAdvanceAmtInvalid: false
         }
         this.onAddAdvanceAmtChange = this.onAddAdvanceAmtChange.bind(this);
         this.handleAdvanceAmtDate = this.handleAdvanceAmtDate.bind(this);
@@ -36,11 +37,11 @@ class AddDepartment extends React.Component {
 
     getInitialState = () => {
         return {
-            addObject: {
+            addAdvanceObject: {
                 employeeId: 0,
                 advanceAmt: '',
-                advanceDate: new Date(),
-                isAdvanceAmtInvalid:false
+                advanceDate: moment(new Date()),
+                isAdvanceAmtInvalid: false
             }
         }
     }
@@ -62,7 +63,7 @@ class AddDepartment extends React.Component {
                             <Input
                                 type="text"
                                 placeholder="Enter Amount in Rupees"
-                                value={this.state.addObject.advanceAmt}
+                                value={this.state.addAdvanceObject.advanceAmt}
                                 onChange={this.onAddAdvanceAmtChange} invalid={this.state.isAdvanceAmtInvalid}/>
                             <FormFeedback tooltip>Advance amount is greater than salary</FormFeedback>
                         </FormGroup>
@@ -71,7 +72,7 @@ class AddDepartment extends React.Component {
                             <Label>Advance Amount Date</Label>
                             <DatePicker className="form-control" placeholderText="Select Advance Date"
                                         onChange={this.handleAdvanceAmtDate}
-                                        selected={this.state.addObject.advanceDate}
+                                        selected={this.state.addAdvanceObject.advanceDate ? moment(this.state.addAdvanceObject.advanceDate) : null}
                                         dateFormat="DD/MM/YYYY"/>
                         </FormGroup>
                         <br/>
@@ -86,33 +87,38 @@ class AddDepartment extends React.Component {
     }
 
     clearAddObject = () => {
-        this.state.addObject.employeeId = 0;
-        this.state.addObject.advanceAmt = '';
-        this.state.addObject.advanceDate = '';
+        this.state.addAdvanceObject.employeeId = 0;
+        this.state.addAdvanceObject.advanceAmt = '';
+        this.state.addAdvanceObject.advanceDate = '';
     }
 
     //Input changes
     onAddAdvanceAmtChange = (event) => {
         if (this.props.parent.state.selectedEmployeeSalary >= event.target.value) {
-            this.state.addObject.employeeId = this.props.parent.state.selectedEmployeeId;
-            this.state.addObject.advanceAmt = event.target.value;
+            this.state.addAdvanceObject.employeeId = this.props.parent.state.selectedEmployeeId;
+            this.state.addAdvanceObject.advanceAmt = event.target.value;
         } else {
-            this.state.isAdvanceAmtInvalid=true;
+            this.state.isAdvanceAmtInvalid = true;
         }
 
         this.forceUpdate();
     }
 
     handleAdvanceAmtDate = (date) => {
-        let addObject = this.state.addObject;
-        addObject.advanceDate = date;
-        this.setState({addObject: addObject});
+        let addAdvanceObject = this.state.addAdvanceObject;
+        addAdvanceObject.advanceDate = date;
+        this.setState({addAdvanceObject: addAdvanceObject});
         this.forceUpdate();
     }
     onAddBtnClicked = () => {
         //Save advances
-        console.log(JSON.stringify(this.state.addObject));
-        axios.post('https://mattendenceserver.herokuapp.com/advances/', this.state.addObject)
+        console.log(JSON.stringify(this.state.addAdvanceObject));
+        axios.interceptors.request.use(request => {
+            console.log('Starting Request', request)
+            return request
+        })
+        var addAdvanceObject=this.state.addAdvanceObject;
+        axios.post('https://mattendenceserver.herokuapp.com/advances', JSON.parse(JSON.stringify(this.state.addAdvanceObject)))
             .then(function (response) {
                 this.props.parent.closeAddAdvanceModal();
                 this.props.parent.refreshTable();
