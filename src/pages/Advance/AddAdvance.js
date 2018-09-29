@@ -103,6 +103,7 @@ class AddDepartment extends React.Component {
         this.state.addAdvanceObject.employeeId = 0;
         this.state.addAdvanceObject.advanceAmt = '';
         this.state.addAdvanceObject.advanceDate = '';
+        this.state.addAdvanceObject.voucherNumber='';
     }
 
     //Input changes
