@@ -79,8 +79,7 @@ class Employees extends React.Component {
             dataField:'netSalary',
             text: 'Net Salary',
             formatter: this.curentSalaryFormatter,
-            sort: true,
-            isDummyField:true
+            sort: true
         }, {
             dataField: 'departmentId',
             text: 'Department',
@@ -245,8 +244,7 @@ class Employees extends React.Component {
     }
 
     curentSalaryFormatter = (cell, row) => {
-
-        return (<div><FaRupeeSign/>{Number(row.netSalary) - Number(row.advanceAmt)}</div>);
+        return (<div><FaRupeeSign/>{row.netSalary}</div>);
     }
 
     departmentFormatter = (cell, row) => {
