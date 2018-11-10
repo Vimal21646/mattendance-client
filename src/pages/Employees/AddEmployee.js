@@ -16,7 +16,7 @@ class AddEmployee extends React.Component {
                 surname: '',
                 salary: '',
                 advanceAmt: '',
-                dateOfJoining: '',
+                dateOfJoining: moment(),
                 departmentId: '',
                 roleId: ''
             },
@@ -51,7 +51,6 @@ class AddEmployee extends React.Component {
     }
 
     render() {
-
         return (
             <Modal isOpen={this.props.parent.state.showAddModal}>
                 <ModalHeader>Add Employee</ModalHeader>
@@ -102,7 +101,8 @@ class AddEmployee extends React.Component {
                             <Label>Employee Joining Date</Label>
                             <DatePicker className="form-control" placeholderText="Select Date of Joining"
                                         onChange={this.handleDateOfJoining}
-                                        selected={moment(this.state.addObject.dateOfJoining)}
+                                        dropdownMode={"select"}
+                                        selected={this.state.addObject.dateOfJoining}
                                         dateFormat="DD/MM/YYYY"/>
                             <br/>
                             <Label>Employee Role</Label>
@@ -185,7 +185,7 @@ class AddEmployee extends React.Component {
 
     handleDateOfJoining = (date) => {
         let addObject = this.state.addObject;
-        addObject.dateOfJoining = date;
+        addObject.dateOfJoining = moment(date);
         this.setState({addObject: addObject});
         this.forceUpdate();
     }

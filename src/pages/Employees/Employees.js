@@ -61,7 +61,7 @@ class Employees extends React.Component {
             text: 'Employee ID',
             sort: true
         }, {
-            dataField:'name',
+            dataField: 'name',
             text: 'Name',
             sort: true,
             formatter: this.employeeNameFormatter
@@ -76,7 +76,7 @@ class Employees extends React.Component {
             formatter: this.advanceAmtFormatter,
             sort: true
         }, {
-            dataField:'netSalary',
+            dataField: 'netSalary',
             text: 'Net Salary',
             formatter: this.curentSalaryFormatter,
             sort: true
